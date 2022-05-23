@@ -1,0 +1,143 @@
+Genus,Species,Specimen_ID,Side,Sex,Age,Group,GL,Bp,Dp,B_ms,H_ms,Bd,Dd
+Bettongia,lesueur,AM-M45759,R,Male,Adult,Burrowing bettong,44.38,7.6,6.97,4.82,4.3,7.81,5.67
+Bettongia,lesueur,ANWC-M01424,L,NA,Adult,Burrowing bettong,41.93,7.92,6.69,4.44,3.95,7.83,5.46
+Bettongia,lesueur,SAM-M6045,R,NA,Adult,Burrowing bettong,41.05,6.88,6.06,4.6,4.19,7.52,5.1
+Bettongia,lesueur lesueur,WAM-M15488,L,NA,Adult,Burrowing bettong,33.41,6,5.17,3.67,3.5,6.29,4.37
+Bettongia,lesueur lesueur,WAM-M4392,L,NA,Adult,Burrowing bettong,40.62,7.34,6.72,4.53,3.86,7.28,5.3
+Bettongia,penicillata nov,SAM-M11938,L,NA,Adult,Brush-tailed bettong,40.92,6.68,6.61,4.75,4.06,7.25,5.05
+Bettongia,penicillata nov,SAM-M13006,R,NA,Adult,Brush-tailed bettong,44.37,7.05,6.31,4.51,3.98,7.48,5.04
+Bettongia,penicillata nov,SAM-M18986,L,Female,Adult,Brush-tailed bettong,43.12,7.2,6.53,4.28,4.38,7.64,5.13
+Bettongia,penicillata nov,SAM-M22661,L,Female,Adult,Brush-tailed bettong,43.47,7.3,6.07,4.72,4.13,7.52,5.25
+Bettongia,penicillata ogilbyi,SAM-M27624,L,Male,Adult,Brush-tailed bettong,44.72,7.77,6.34,4.87,4.34,7.79,5.22
+Bettongia,penicillata ogilbyi,SAM-M27625,L,Male,Adult,Brush-tailed bettong,42.76,7.98,7.2,5.09,4.65,7.51,5.55
+Bettongia,penicillata ogilbyi,SAM-M27626,L,Male,Adult,Brush-tailed bettong,44.28,7.92,6.58,4.94,4.2,7.41,5.43
+Bettongia,penicillata ogilbyi,SAM-M27627,L,Female,Adult,Brush-tailed bettong,41.86,7.44,6.59,4.3,3.72,7.04,5.23
+Bettongia,penicillata ogilbyi,SAM-M27628,L,Female,Adult,Brush-tailed bettong,42.93,7.73,6.54,4.89,4.15,7.53,5.47
+Bettongia,penicillata ogilbyi,WAM-M19063,L,Female,Adult,Brush-tailed bettong,47.61,8.02,7.71,5.02,4.5,8.17,6.07
+Lagorchestes,conspicillatus,MAGNT-U6152,L,Male,Adult,Spectacled hare-wallaby,78.59,10.89,10.12,7.38,5.81,11.23,8.45
+Lagorchestes,conspicillatus,QM-JM15872,L,NA,NA,Spectacled hare-wallaby,76.53,10.64,10.48,7.47,5.81,10.5,8.39
+Lagorchestes,conspicillatus conspicillatus,UQ275,L,NA,NA,Spectacled hare-wallaby,63.53,8.56,7.95,5.67,4.45,8.47,6.42
+Lagorchestes,conspicillatus conspicillatus,UQ276,L,NA,Adult,Spectacled hare-wallaby,63.31,9.19,8.4,6.08,4.96,8.77,6.75
+Lagorchestes,conspicillatus conspicillatus,UQ278,L,NA,Adult,Spectacled hare-wallaby,68.71,9.29,8.54,6.41,5.69,9,7.1
+Lagorchestes,conspicillatus conspicillatus,UQ391,R,NA,Adult,Spectacled hare-wallaby,64.95,9.5,8.64,6.5,5.64,9.62,7.27
+Lagorchestes,conspicillatus conspicillatus,UQ392,L,NA,Subadult,Spectacled hare-wallaby,64.43,9.02,8.3,6.22,4.96,9.13,6.87
+Lagorchestes,conspicillatus conspicillatus,WAM-M19854,R,NA,NA,Spectacled hare-wallaby,65.67,9.7,8.35,6.31,5.26,9.52,7.08
+Lagorchestes,conspicillatus conspicillatus,WAM-M7032,L,Female,NA,Spectacled hare-wallaby,62.17,8.41,7.77,5.7,4.75,8.96,6.69
+Lagorchestes,conspicillatus leichardti,WAM-M47183,L,Male,Juvenile,Spectacled hare-wallaby,74,10.1,9.51,7.34,5.38,10.34,7.18
+Lagorchestes,hirsutus,MAGNT-U6058,L,Female,Adult,Rufous hare-wallaby,51.1,7.29,6.8,5.33,4.34,7.45,6.1
+Lagorchestes,hirsutus,MAGNT-U6064,L,Male,Subadult,Rufous hare-wallaby,50.88,7.22,6.53,5.41,4.07,7.4,6.12
+Lagorchestes,hirsutus,MAGNT-U6065,R,Male,Subadult,Rufous hare-wallaby,51.37,7.57,6.82,5.02,3.95,7.13,5.86
+Lagorchestes,hirsutus,MAGNT-U6066,L,Female,Subadult,Rufous hare-wallaby,48.39,7.23,6.55,4.46,4.24,7.24,5.66
+Lagorchestes,hirsutus,MAGNT-U6067,L,Female,Adult,Rufous hare-wallaby,47.57,6.52,6.47,4.52,3.77,7.09,5.56
+Lagorchestes,hirsutus,MAGNT-U6068,L,Female,Adult,Rufous hare-wallaby,53.14,7.73,6.83,5.69,4.04,7.68,6.16
+Lagorchestes,hirsutus,MAGNT-U6069,R,NA,Adult,Rufous hare-wallaby,52.79,7.23,6.62,4.71,3.8,7.34,5.82
+Lagorchestes,hirsutus,MAGNT-U6070,L,Female,Adult,Rufous hare-wallaby,50.06,7.1,6.58,5.34,4.21,7.44,5.89
+Lagorchestes,hirsutus,MAGNT-U6071,L,Male,Adult,Rufous hare-wallaby,53.05,7.37,7.08,5.1,4.1,7.4,6.1
+Lagorchestes,hirsutus,MAGNT-U6073,L,Female,Adult,Rufous hare-wallaby,49.79,6.79,6.34,4.83,3.79,7.33,5.82
+Lagorchestes,hirsutus,SAM-M3590,L,Female,Subadult,Rufous hare-wallaby,52.22,6.94,6.65,4.89,3.69,8.13,6.04
+Lagorchestes,hirsutus bernieri,WAM-M7965,R,Male,Juvenile,Rufous hare-wallaby,49.38,6.64,6.99,4.9,3.94,6.82,5.6
+Lagorchestes,hirsutus bernieri,WAM-M7966,L,NA,Juvenile,Rufous hare-wallaby,44.52,6.71,6.19,4.35,3.53,5.96,5.22
+Lagorchestes,hirsutus dorreae,WAM-M7983,L,NA,Subadult,Rufous hare-wallaby,49.96,7.28,6.76,5.24,4.19,7.06,5.56
+Lagostrophus,fasciatus,AM-M40035,R,Male,Adult,Banded hare-wallaby,43.27,8.07,7.62,5.28,4.45,8.18,5.76
+Lagostrophus,fasciatus fasciatus,WAM-M24318,R,NA,Adult,Banded hare-wallaby,45.57,7.85,6.76,5.02,4.7,7.86,5.63
+Lagostrophus,fasciatus fasciatus,WAM-M4135,R,NA,Adult,Banded hare-wallaby,44.45,7.46,6.56,5.09,4.64,7.73,5.33
+Lagostrophus,fasciatus fasciatus,WAM-M4393,R,NA,Adult,Banded hare-wallaby,44.94,7.63,6.53,4.63,4.52,7.58,5.45
+Lagostrophus,fasciatus fasciatus,WAM-M5658,R,NA,Adult,Banded hare-wallaby,46.33,8.48,7.02,5.18,4.42,8.12,5.6
+Lagostrophus,fasciatus fasciatus,WAM-M8006,L,NA,Adult,Banded hare-wallaby,43.29,7.9,6.07,4.64,4.06,7.45,5.32
+Macropus,fuliginosus,AM-37228,R,NA,Juvenile,W. grey kangaroo,125.33,18.36,17.74,11.6,9.87,17.35,14.57
+Macropus,fuliginosus,AM-M33374,R,NA,Adult,W. grey kangaroo,167.05,24.08,21.96,14.41,14.55,21.28,17.29
+Macropus,fuliginosus,ANWC-M01374,R,Male,Juvenile,W. grey kangaroo,133.04,21,18.16,10.26,11.35,17.51,14.16
+Macropus,fuliginosus,ANWC-M01375,R,Female,Adult,W. grey kangaroo,173.69,22.7,21.38,13.17,14.98,21.92,17.83
+Macropus,fuliginosus,ANWC-M01378,R,Female,Adult,W. grey kangaroo,163.72,20.21,18.64,11.6,15.42,19.48,14.79
+Macropus,fuliginosus,ANWC-M01381,R,Female,Adult,W. grey kangaroo,160,19.79,17.4,11.49,15.98,18.87,15.21
+Macropus,fuliginosus,WAM-M63399,R,NA,NA,W. grey kangaroo,111.9,18.02,15.96,11.75,10.22,17.01,13.79
+Macropus,fuliginosus melanops,WAM-M13015,R,NA,Adult,W. grey kangaroo,172.39,27.39,23.51,16.39,19.12,25.8,18.72
+Macropus,fuliginosus melanops,WAM-M13461,L,NA,Adult,W. grey kangaroo,163.21,26.8,21.71,16.41,18.12,25.55,18.48
+Macropus,fuliginosus melanops,WAM-M13586,L,Female,Adult,W. grey kangaroo,153.9,20.64,20.17,13.01,15.93,20.25,15.6
+Macropus,fuliginosus melanops,WAM-M3328,L,Male,Adult,W. grey kangaroo,166.28,27.76,22.96,16.17,15.98,26.34,19.96
+Macropus,fuliginosus melanops,WAM-M6750,R,Male,Adult,W. grey kangaroo,165.86,23.03,21.33,13.72,14.66,21.12,16.7
+Notamacropus,agilis,MAGNT-R.U0237,L,Male,Subadult,Agile wallaby,106.71,16.58,15.26,10.96,10.54,16.54,12.33
+Notamacropus,agilis,MAGNT-U0232,R,Female,Subadult,Agile wallaby,93.31,14.13,13.55,9.65,8.7,14.37,10.49
+Notamacropus,agilis,MAGNT-U6143,L,Male,Adult,Agile wallaby,112.24,16.79,17.5,12.42,12.34,17.66,13.31
+Notamacropus,agilis,MAGNT-U6149,R,Female,Juvenile,Agile wallaby,89.8,13.53,11.89,8.21,8.04,12.48,10.04
+Notamacropus,agilis,MAGNT-U6150,L,Male,Juvenile,Agile wallaby,94.3,16.78,13.83,10.23,7.82,15.22,11.47
+Notamacropus,agilis,MAGNT-U6151,R,Male,Subadult,Agile wallaby,103.99,17.39,16.28,11.37,9.73,16.57,12.93
+Notamacropus,agilis,SAM-M23314,L,Male,Adult,Agile wallaby,104.11,16.55,14.97,10.56,10.02,16.1,12
+Notamacropus,agilis nigrescens,WAM-M11620,L,Female,Juvenile,Agile wallaby,92.79,13.37,13.24,9.98,7.79,14.99,10.6
+Notamacropus,agilis nigrescens,WAM-M15836,L,Female,Subadult,Agile wallaby,100.28,15.02,14.47,10.69,9.87,16.38,12.48
+Onychogalea,fraenata,AM-M12663,L,NA,NA,Bridled nail-tail wallaby,58.82,11.12,9.53,7.26,5.96,10.2,8.53
+Onychogalea,fraenata,AM-M46830,L,NA,Adult,Bridled nail-tail wallaby,57.7,10.63,9.23,7.21,6.28,10.5,8.35
+Onychogalea,fraenata,AM-M47392,L,NA,NA,Bridled nail-tail wallaby,56.5,10.45,9.17,6.91,5.8,9.87,7.52
+Onychogalea,fraenata,AM-MS1201,R,NA,NA,Bridled nail-tail wallaby,62.63,12.27,10.8,7.52,5.98,11.04,9.45
+Onychogalea,fraenata,QM-JM11183,L,Male,NA,Bridled nail-tail wallaby,66.95,11.74,11.24,7.87,7,11.43,9.12
+Onychogalea,fraenata,QM-JM19915,L,NA,NA,Bridled nail-tail wallaby,61.98,12.23,11.45,8.22,7.76,11.77,9.63
+Onychogalea,fraenata,SAM-M24347,L,Male,Adult,Bridled nail-tail wallaby,61.13,11.63,11.52,8.14,7.16,12.09,9.44
+Onychogalea,unguifera,MAGNT-5329,L,Male,Subadult,Northern nail-tail wallaby,76.58,11.6,11.65,8.62,7.34,12,9.78
+Onychogalea,unguifera,MAGNT-U6126,R,NA,Juvenile,Northern nail-tail wallaby,70.04,11.87,10.96,7.34,6.49,11.74,9.4
+Onychogalea,unguifera,MAGNT-U6145,L,Male,Subadult,Northern nail-tail wallaby,75.88,13.01,11.06,7.79,7.43,12.25,9.72
+Onychogalea,unguifera,MAGNT-U6166,L,Female,Juvenile,Northern nail-tail wallaby,70.34,11.9,10.05,6.63,5.63,10.86,8.65
+Onychogalea,unguifera,QM-JM20284,L,NA,NA,Northern nail-tail wallaby,78.61,12.01,10.96,10.08,8.73,13.02,9.59
+Onychogalea,unguifera unguifera,WAM-M13969,L,NA,Adult,Northern nail-tail wallaby,82.24,13.56,12.87,8.75,8.81,14.08,10.9
+Onychogalea,unguifera unguifera,WAM-M6942,R,Male,Adult,Northern nail-tail wallaby,85.96,14.05,12.24,8.84,8.39,14.62,10.05
+Osphranter,antilopinus,MAGNT-U0357,L,Female,Adult,Antilopine wallaroo,148.42,27.09,21.64,15.93,14.67,24.5,18.53
+Osphranter,antilopinus,MAGNT-U6142,R,Female,Adult,Antilopine wallaroo,129.67,20.92,19.9,13.03,12.85,20.85,14.39
+Osphranter,antilopinus,MAGNT-U6147,L,Male,Adult,Antilopine wallaroo,150.07,27.46,24.85,15.6,16.11,24.21,17.67
+Osphranter,antilopinus,MAGNT-U6148,L,Male,Adult,Antilopine wallaroo,151.82,24.56,21.22,16.86,17.03,24.7,17.52
+Osphranter,antilopinus,WAM-M15837,R,Male,Adult,Antilopine wallaroo,125.55,21.63,20.18,15.03,11.65,21.52,15.68
+Osphranter,bernardus,MAGNT-U5770,L,Female,Adult,Black wallaroo,88.3,16.44,13.32,10.74,9.32,16.76,11.65
+Osphranter,bernardus,MAGNT-U6141,R,Male,Adult,Black wallaroo,100.74,20,16.73,12.61,11.16,20.12,13.52
+Osphranter,bernardus,MAGNT-U6153,L,Male,Juvenile,Black wallaroo,80.67,15.99,12.74,9.57,6.78,13.72,10.79
+Osphranter,bernardus,MAGNT-U6168,L,Male,Juvenile,Black wallaroo,85.87,17.32,14.17,9.65,7.47,14.93,11.58
+Osphranter,robustus,QM-JM17217,R,NA,NA,Common wallaroo,137.77,24.74,21.56,16.87,13.21,23.95,17.31
+Osphranter,robustus erubescens,WAM-M14737,L,NA,Adult,Common wallaroo,115.25,18.09,16.86,11.74,12.19,18.25,13.25
+Osphranter,robustus erubescens,WAM-M19223,R,Male,NA,Common wallaroo,126.38,20.14,18.89,12.79,11.61,20.17,14.46
+Osphranter,robustus erubescens,WAM-M24338,R,NA,Adult,Common wallaroo,119.22,22.12,18.49,13.79,12.01,21.68,14.97
+Osphranter,robustus erubescens,WAM-M34125,R,Female,Adult,Common wallaroo,121.79,18.12,19.4,11.74,13.18,18.62,14.18
+Osphranter,robustus erubescens,WAM-M7097,L,NA,Adult,Common wallaroo,129.93,20.71,18.8,12.93,13.96,19.7,14.76
+Osphranter,robustus isabellinus,UQ268,L,NA,Adult,Common wallaroo,105.73,19.01,17.93,11.32,9.59,18.32,13.19
+Osphranter,robustus isabellinus,UQ280,L,NA,Adult,Common wallaroo,104.03,19.36,16.5,11.3,9.09,18.83,13.45
+Osphranter,robustus robustus,MAGNT-U0631,L,NA,Adult,Common wallaroo,135.62,24.45,21.85,16.12,14.9,24.44,16.94
+Osphranter,robustus robustus,SAM-M13977,R,Male,Adult,Common wallaroo,144.04,25.62,23.6,16.32,14.91,25.06,17.55
+Osphranter,robustus robustus,SAM-M1846,L,Female,Adult,Common wallaroo,108.75,17.66,15.51,11.17,9.1,17.66,12.68
+Osphranter,robustus robustus,SAM-M21417,L,NA,Adult,Common wallaroo,133.46,23.18,20.6,14.76,13.33,22.17,16.5
+Osphranter,robustus robustus,SAM-M21418,L,NA,Adult,Common wallaroo,108.76,17.89,16.38,12.39,10.8,18.72,13.34
+Osphranter,robustus robustus,SAM-M21419,L,NA,Adult,Common wallaroo,114.65,18.67,15.91,12.47,11.07,18.36,13.69
+Osphranter,robustus robustus,SAM-M23836,L,NA,Adult,Common wallaroo,111.36,17.89,16.87,12.18,9.68,17.89,13.68
+Osphranter,robustus robustus,SAM-M26982,L,NA,Juvenile,Common wallaroo,96.28,16.34,14.29,10.41,8.72,14.85,11.81
+Osphranter,robustus woodwardi,WAM-M15848,L,NA,Adult,Common wallaroo,128.78,23.2,20.87,15.41,15.35,23.67,17.23
+Osphranter,rufus,MAGNT-U0259,L,Female,Juvenile,Red kangaroo,134.71,20.45,19.48,11.97,12.03,17.93,14.9
+Osphranter,rufus,QM-J22115,R,Male,NA,Red kangaroo,163.09,25.49,22.66,15.76,16.57,23.66,16.63
+Osphranter,rufus,QM-J5809,R,Female,NA,Red kangaroo,146.77,21.79,19.98,12.96,13.86,19.88,14.55
+Osphranter,rufus,QM-J5810,R,Female,NA,Red kangaroo,151.16,22.07,20.11,13.45,15.7,20.9,15.55
+Osphranter,rufus,SAM-M16336,L,Female,Adult,Red kangaroo,146.96,23.29,19.98,14.34,14.96,21.21,17.09
+Osphranter,rufus,SAM-M27398,L,NA,Adult,Red kangaroo,164.59,27.9,24.35,15.93,17.85,24.48,18.25
+Osphranter,rufus,SAM-M5523,L,NA,NA,Red kangaroo,181.23,27.39,24.05,15.86,19.52,23.99,18.3
+Osphranter,rufus,SAM-M5524,L,Female,NA,Red kangaroo,162.13,25.88,23.74,17.14,13.63,25.63,18.79
+Osphranter,rufus,SAM-M6559,L,Male,Adult,Red kangaroo,143.14,23.08,21.25,14.26,14.21,22.09,16.35
+Osphranter,rufus,SAM-M6560,L,Male,Adult,Red kangaroo,145.09,22.4,21.6,13.83,16.1,22.31,15.89
+Osphranter,rufus,SAM-M832,L,Female,Adult,Red kangaroo,140.35,21.44,18.75,13.62,13.53,21.16,15.2
+Osphranter,rufus,UQ197,L,NA,Juvenile,Red kangaroo,112.25,20.88,19.18,10.68,9.33,16.23,13.3
+Osphranter,rufus,WAM-6749,R,NA,Adult,Red kangaroo,157,28.74,24.15,18.16,16.6,24.22,18.22
+Osphranter,rufus,WAM-M4953,L,Male,NA,Red kangaroo,141.05,23.09,20.66,14.18,14.18,19.27,12.6
+Petrogale,brachyotis,MAGNT-U4120,R,NA,Adult,Short-eared rock-wallaby,48.22,8.75,7.29,5.35,4.03,8.26,6.12
+Petrogale,brachyotis,WAM-M19540,R,NA,Adult,Short-eared rock-wallaby,53.03,11.72,9.58,6.55,5.07,10.28,8.13
+Petrogale,brachyotis,WAM-M19865,L,NA,Adult,Short-eared rock-wallaby,48.66,9.97,8.53,6.93,5.15,9.78,6.82
+Petrogale,concinna,MAGNT-U6117,R,Male,Adult,Nabarlek,39.4,6.96,5.91,4.35,3.44,6.7,5.07
+Petrogale,concinna monastria,WAM-M4168,L,Male,Adult,Nabarlek,41.79,7.39,6.23,4.8,3.53,6.79,5.01
+Petrogale,concinna monastria,WAM-M4171,L,Female,Adult,Nabarlek,40.65,6.76,6.13,4.43,3.69,6.66,4.88
+Petrogale,lateralis,MAGNT-U6146,L,Male,Subadult,Black-flanked rock-wallaby,54.38,10.15,9.26,5.86,4.67,10.04,7.26
+Petrogale,lateralis centralis nov,SAM-M24183,L,Female,Adult,Black-flanked rock-wallaby,49.58,10.63,8.49,5.84,4.87,9.44,7.11
+Petrogale,lateralis centralis nov,SAM-M24407,L,NA,Adult,Black-flanked rock-wallaby,50.52,9.68,8.74,5.99,4.78,9.72,7.13
+Petrogale,lateralis centralis nov,SAM-M24408,L,NA,NA,Black-flanked rock-wallaby,52.74,10.23,8.95,6.31,5.05,9.93,7.6
+Petrogale,lateralis centralis nov,SAM-M26849,L,NA,Adult,Black-flanked rock-wallaby,50.64,9.12,8.33,5.67,4.7,9.26,6.7
+Petrogale,lateralis centralis nov,SAM-M26850,R,NA,Adult,Black-flanked rock-wallaby,52.51,9.11,8.46,5.87,4.73,9.46,6.78
+Petrogale,lateralis centralis nov,SAM-M26851,L,NA,Subadult,Black-flanked rock-wallaby,50.83,9.98,8.4,5.76,4.52,9.83,6.74
+Petrogale,lateralis centralis nov,SAM-M26981,L,NA,Adult,Black-flanked rock-wallaby,53.58,11.13,9.39,6.46,5.37,10.31,7.71
+Petrogale,lateralis centralis nov,SAM-M27347,L,NA,Adult,Black-flanked rock-wallaby,53.23,9.85,8.26,6.11,4.8,9.38,6.71
+Petrogale,lateralis hacketti,WAM-M14797,L,NA,Adult,Black-flanked rock-wallaby,55.66,10.69,10.18,6.33,5.36,10.41,7.69
+Petrogale,lateralis lateralis,SAM-M27400,L,Male,Adult,Black-flanked rock-wallaby,51.96,10.36,8.75,6.8,5.02,10.77,7.52
+Petrogale,lateralis lateralis,SAM-M27458,L,Female,Adult,Black-flanked rock-wallaby,48.2,9.34,7.94,5.84,5.01,9.05,7.01
+Petrogale,lateralis lateralis,WAM-M49175,L,NA,Subadult,Black-flanked rock-wallaby,49.83,9.37,7.89,5.77,4.26,9.05,6.25
+Petrogale,lateralis lateralis,WAM-M49183,L,NA,Adult,Black-flanked rock-wallaby,52.07,9.65,8.12,6.02,4.72,10.02,6.62
+Petrogale,rothschildi,WAM-M25650,L,NA,Adult,Rothschild's rock-wallaby,54.22,9.57,8.37,6.4,5.05,9.82,6.91
+Petrogale,rothschildi,WAM-M25651,L,NA,Adult,Rothschild's rock-wallaby,54.36,9.27,8.27,6.11,4.71,9.51,6.77

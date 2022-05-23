@@ -1,0 +1,8 @@
+"","Taxa","MANOVA","df1","df2","F>Fcritical at 0.01","F.Stat","p"
+"1","All Medium Macropods","Shape ~ Age","5","34",TRUE,"2.155","0.082"
+"2","Onychogalea species","Shape ~ Age","5","7",TRUE,"1.641","0.266"
+"3","Petrogale species","Shape ~ Age","5","14",TRUE,"1.122","0.393"
+"4","Black-flanked rock-wallaby","Shape ~ Size","5","11",TRUE,"3.553","0.037"
+"5","Black-flanked rock-wallaby","Shape ~ Age","5","7",TRUE,"0.645","0.675"
+"6","Spectacled hare-wallaby","Shape ~ Size","5","5",TRUE,"4.81","0.055"
+"7","Spectacled hare-wallaby","Shape ~ Age","5","1",TRUE,"2.607","0.437"

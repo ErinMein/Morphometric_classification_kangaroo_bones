@@ -1,0 +1,814 @@
+---
+title: "Macropod Astragalus - Metric morphometrics"
+author: "Erin Mein"
+date: "04/03/2022"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+#Description of analyses
+#This analysis includes multivariate ordinal and statistical analyses of macropod astragali and models the classification of archaeological specimens.
+
+```{r set library and wd}
+library(MASS)
+library(tidyverse)
+library(car)
+library(plyr)
+library(Hmisc)
+library(vegan)
+library(rstatix)
+library(MVN)
+
+setwd("~/Dropbox/Documents/PhD/Metric_Morphometrics/Metric_morph_R/Morphometric_classification_kangaroo_bones/Astragali")
+```
+
+```{r Import Training data}
+Data.train <- read.csv(file="Data/Data.train.final.csv", header=TRUE)
+rownames(Data.train) <- c(paste(substr(Data.train$Genus,1,1),substr(Data.train$Species,1,3), Data.train$Specimen_ID ,sep = "_"))
+```
+
+```{r Test for Redundancy}
+redun(~Data.train[, 9] + Data.train[, 10] + Data.train[, 11] + Data.train[, 12] + 
+    Data.train[, 13] + Data.train[, 14] + Data.train[, 15] + Data.train[, 
+    16] + Data.train[, 17] + Data.train[, 18] + Data.train[, 19] + Data.train[, 
+    20], r2 = 0.01)
+
+PCA <- prcomp(Data.train[,9:20])
+PCAredun <- prcomp(Data.train[,c(10, 13, 16:20)])
+
+PCA_distance <- dist(PCA$x)
+PCAredun_dist <- dist(PCAredun$x)
+
+mantel(PCA_distance, PCAredun_dist, method = "pearson", permutations = 9999)
+
+remove(PCA, PCAredun, PCA_distance, PCAredun_dist)
+```
+
+```{r Remove redundant variables from training data}
+Data.train <- Data.train[,c(1:5, 7, 8, 10, 13, 16:20)]
+colnames(Data.train)
+```
+
+```{r calculate Geometric Mean & standardise data using Log Shape Ratio method (Claude 2013)}
+GeoMean <- apply(Data.train[,8:14], 1, prod)^(1/7)
+LSR.train <- log(Data.train[,8:14]/ GeoMean)
+LSR.train <- cbind(Data.train[,1:7], GeoMean, LSR.train)
+remove(GeoMean)
+```
+
+```{r Apply Size Categories to Training Data}
+Size <- Data.train$Group
+Size <- gsub("Burrowing bettong", "Small", Size)
+Size <- gsub("Brush-tailed bettong", "Small", Size)
+Size <- gsub("Spectacled hare-wallaby", "Medium", Size)
+Size <- gsub("Rufous hare-wallaby", "Small", Size)
+Size <- gsub("Banded hare-wallaby", "Small", Size)
+Size <- gsub("W. grey kangaroo", "Large", Size)
+Size <- gsub("Agile wallaby", "Large", Size)
+Size <- gsub("Bridled nail-tail wallaby", "Medium", Size)
+Size <- gsub("Northern nail-tail wallaby", "Medium", Size)
+Size <- gsub("Black wallaroo", "Large", Size)
+Size <- gsub("Antilopine wallaroo", "Large", Size)
+Size <- gsub("Common wallaroo", "Large", Size)
+Size <- gsub("Red kangaroo", "Large", Size)
+Size <- gsub("Short-eared rock-wallaby", "Medium", Size)
+Size <- gsub("Nabarlek", "Small", Size)
+Size <- gsub("Black-flanked rock-wallaby", "Medium", Size)
+Size <- gsub("Rothschild's rock-wallaby", "Medium", Size)
+
+Data.train <- cbind(Data.train[,1:6], Size, Data.train[7:14])
+LSR.train <- cbind(LSR.train[,1:6], Size, LSR.train[,7:15])
+remove(Size)
+```
+
+```{r Import Archaeological Data}
+Data.arch <- read.csv(file="Data/Data.arch.csv", header=TRUE)
+rownames(Data.arch) <- c(paste(substr(Data.arch$Genus,1,1),substr(Data.arch$Species,1,3), Data.arch$Specimen_ID ,sep = "_"))
+
+```
+
+```{r Calculate Size of Archaeological Specimens & Compare with training data}
+GeoMean <- apply(Data.arch[,9:15], 1, prod)^(1/7)
+LSR.arch <- log(Data.arch[,9:15]/ GeoMean)
+LSR.arch <- cbind(Data.arch[,1:8], GeoMean, LSR.arch)
+
+colnames(LSR.arch) == colnames(LSR.train)
+remove(GeoMean)
+
+LSR.all <- rbind(LSR.train, LSR.arch)
+```
+
+```{r Plot size of arch and training data}
+tmp <- LSR.train[,c(7,8,9)]
+new_order <- with(tmp, reorder(Group , GeoMean, median , na.rm=T))
+tmparch <- LSR.arch[,c(3, 9)]
+
+boxplot(tmp$GeoMean ~ new_order,las = 2, ylab = '', xlab = "", col = 'white')
+abline(a=tmparch$GeoMean[1], b= 0, col=alpha("black", 0.2), lwd = 1) #"BC004"
+abline(a=tmparch$GeoMean[2], b= 0, col=alpha("black", 0.2), lwd = 1) #BC042
+abline(a=tmparch$GeoMean[3], b= 0, col=alpha("black", 0.2), lwd = 1) #BC044
+abline(a=tmparch$GeoMean[4], b= 0, col=alpha("black", 0.2), lwd = 1) #BC048
+abline(a=tmparch$GeoMean[5], b= 0, col=alpha("black", 0.2), lwd = 1) #BC062
+abline(a=tmparch$GeoMean[6], b= 0, col=alpha("black", 0.2), lwd = 1) #BC142
+abline(a=tmparch$GeoMean[7], b= 0, col=alpha("black", 0.2), lwd = 1) #BC170
+abline(a=tmparch$GeoMean[8], b= 0, col=alpha("black", 0.2), lwd = 1) #BC211
+abline(a=tmparch$GeoMean[9], b= 0, col=alpha("black", 0.2), lwd = 1) #BC212
+abline(a=tmparch$GeoMean[10], b= 0, col=alpha("black", 0.2), lwd = 1) #BC224
+abline(a=tmparch$GeoMean[11], b= 0, col=alpha("black", 0.2), lwd = 1) #BC293
+abline(a=tmparch$GeoMean[12], b= 0, col=alpha("black", 0.2), lwd = 1) #BC294
+abline(a=tmparch$GeoMean[13], b= 0, col=alpha("black", 0.2), lwd = 1) #BC337
+
+remove(tmp, tmparch, new_order)
+```
+
+```{r Split Training Data & Archaeological Data into Size Classes}
+
+LSR.Large <- rbind(filter(LSR.all, Size == "Large"), filter(LSR.all, Group == "Northern nail-tail wallaby"))
+
+tmp <- filter(LSR.arch, GeoMean > 3.5)
+LSR.Medium <- rbind(filter(LSR.all, Size == "Medium"), tmp)
+
+tmp <- filter(LSR.arch, GeoMean < 3.5)
+LSR.Small <- rbind(filter(LSR.all, Size == "Small"), filter(LSR.all, Group == "Spectacled hare-wallaby"), tmp)
+
+```
+
+##Large Macropod PCA
+
+```{r Create Factors}
+Largespc <- LSR.Large$Group
+Largespc <- gsub("W. grey kangaroo", "#FF6633", Largespc)
+Largespc <- gsub("Agile wallaby", "#0000FF", Largespc)
+Largespc <- gsub("Northern nail-tail wallaby", "#FFFF00", Largespc)
+Largespc <- gsub("Black wallaroo", "#99CC00", Largespc)
+Largespc <- gsub("Antilopine wallaroo", "#009966", Largespc)
+Largespc <- gsub("Common wallaroo", "#00FF00", Largespc)
+Largespc <- gsub("Red kangaroo", "#006600", Largespc)
+Largespc
+
+Largeage <- LSR.Large$Age
+Largeage <- (gsub("Juvenile", 18, Largeage))
+Largeage <- (gsub("Subadult", 17, Largeage))
+Largeage <- (gsub("Adult", 16, Largeage))
+Largeage <- ifelse(Largeage <16, 15, Largeage)
+Largeage <- ifelse(Largeage >18, 15, Largeage)
+Largeage <- ifelse(is.na(Largeage), 15, Largeage)
+Largeage <- as.numeric(Largeage)
+Largeage
+```
+
+```{r #Plot PC1 vs PC2}
+PCA <- prcomp(LSR.Large[,10:16])
+sum.PCA <- summary(PCA)
+
+chull <- cbind(LSR.Large[,1:8], PCA$x[,1:2])
+polys <- ddply(chull, .(Group), function(chull) chull[chull(chull$PC1, chull$PC2), ])
+
+plot(PCA$x[,2] ~ PCA$x[,1], 
+     pch=Largeage,
+     col=Largespc,
+     xlab=paste("PC 1 (", round(sum.PCA$importance[2]*100, 1), "%)", sep = ""), 
+     ylab=paste("PC 2 (", round(sum.PCA$importance[5]*100, 1), "%)", sep = ""), 
+     asp=1, 
+     cex=3)
+
+polygon(c(polys$PC1[polys$Group=="W. grey kangaroo"]), c(polys$PC2[polys$Group=="W. grey kangaroo"]), col = alpha("#FF6633", 0.2), border = "#FF6633")
+polygon(c(polys$PC1[polys$Group=="Agile wallaby"]), c(polys$PC2[polys$Group=="Agile wallaby"]), col = alpha("#0000FF", 0.2), border = "#0000FF")
+polygon(c(polys$PC1[polys$Group=="Antilopine wallaroo"]), c(polys$PC2[polys$Group=="Antilopine wallaroo"]), col = alpha("#009966", 0.2), border = "#009966")
+polygon(c(polys$PC1[polys$Group=="Common wallaroo"]), c(polys$PC2[polys$Group=="Common wallaroo"]), col = alpha("#00FF00", 0.2), border = "#00FF00")
+polygon(c(polys$PC1[polys$Group=="Red kangaroo"]), c(polys$PC2[polys$Group=="Red kangaroo"]), col = alpha("#006600", 0.2), border = "#006600")
+polygon(c(polys$PC1[polys$Group=="Northern nail-tail wallaby"]), c(polys$PC2[polys$Group=="Northern nail-tail wallaby"]), col = alpha("#FFFF00", 0.2), border = "#FFFF00")
+polygon(c(polys$PC1[polys$Group=="Black wallaroo"]), c(polys$PC2[polys$Group=="Black wallaroo"]), col = alpha("#99CC00", 0.2), border = "#99CC00")
+
+abline(v=0, lty=2, col="grey50")
+abline(h=0, lty=2, col="grey50")
+
+remove(chull, polys)
+
+```
+
+```{r PC1 & PC2 loadingss}
+PC_loadings <- data.frame(PCA$rotation)
+barplot(PC_loadings$PC1, col = "#006600", xlab = "Measurements", ylab = "PC1 Loadings", main = "Large Macropod Astragali - PC1 loadings", names.arg = rownames(PC_loadings))
+barplot(PC_loadings$PC2, col = "#006600", xlab = "Measurements", ylab = "PC2 Loadings", main = "Large Macropod Astragali - PC2 loadings", names.arg = rownames(PC_loadings))
+remove(PC_loadings)
+```
+
+##Medium Macropod PCA
+
+```{r Create groups}
+Mediumspc <- LSR.Medium$Group[1:58] 
+Mediumspc <- gsub("Spectacled hare-wallaby", "#33FFFF", Mediumspc)
+Mediumspc <- gsub("Bridled nail-tail wallaby", "#CCCC00", Mediumspc)
+Mediumspc <- gsub("Northern nail-tail wallaby", "#FFFF00", Mediumspc)
+Mediumspc <- gsub("Short-eared rock-wallaby", "#FF33CC", Mediumspc)
+Mediumspc <- gsub("Black-flanked rock-wallaby", "#CC0066", Mediumspc)
+Mediumspc <- gsub("Rothschild's rock-wallaby", "#FFCCCC", Mediumspc)
+Mediumspc2 <- LSR.Medium$Genus[59:61]
+Mediumspc2 <- gsub("Boodie", "#000000", Mediumspc2)
+Mediumspc <- c(Mediumspc, Mediumspc2)
+remove(Mediumspc2)
+Mediumspc
+
+Mediumage <- LSR.Medium$Age
+Mediumage <- (gsub("Juvenile", 18, Mediumage))
+Mediumage <- (gsub("Subadult", 17, Mediumage))
+Mediumage <- (gsub("Adult", 16, Mediumage))
+Mediumage <- ifelse(Mediumage <16, 15, Mediumage)
+Mediumage <- ifelse(Mediumage >18, 15, Mediumage)
+Mediumage <- ifelse(is.na(Mediumage), 15, Mediumage)
+Mediumage <- as.numeric(Mediumage)
+Mediumage
+
+Mediumgenus <- LSR.Medium$Genus
+Mediumgenus <-gsub("Lagorchestes", "#33FFFF", Mediumgenus)
+Mediumgenus <-gsub("Onychogalea", "#FFFF00", Mediumgenus)
+Mediumgenus <-gsub("Petrogale", "#CC0066", Mediumgenus)
+Mediumgenus <-gsub("Boodie", "#000000", Mediumgenus)
+Mediumgenus
+
+```
+
+```{r #Plot PC1 vs PC2}
+PCA <- prcomp(LSR.Medium[,10:16])
+sum.PCA <- summary(PCA)
+
+chull <- cbind(LSR.Medium[,1:8], PCA$x[,1:2])
+polys <- ddply(chull, .(Group), function(chull) chull[chull(chull$PC1, chull$PC2), ])
+
+plot(PCA$x[,2] ~ PCA$x[,1], 
+     pch=Mediumage,
+     col=Mediumspc,
+     xlab=paste("PC 1 (", round(sum.PCA$importance[2]*100, 1), "%)", sep = ""), 
+     ylab=paste("PC 2 (", round(sum.PCA$importance[5]*100, 1), "%)", sep = ""), 
+     asp=1, 
+     cex=3)
+
+text(PCA$x[59:61,2]~PCA$x[59:61,1], labels=LSR.Medium$Specimen_ID[59:61], pos=c(1,3,2,4), cex=1.5) 
+
+polygon(c(polys$PC1[polys$Group=="Spectacled hare-wallaby"]), c(polys$PC2[polys$Group=="Spectacled hare-wallaby"]), col = alpha("#33FFFF", 0.2), border = "#33FFFF")
+polygon(c(polys$PC1[polys$Group=="Bridled nail-tail wallaby"]), c(polys$PC2[polys$Group=="Bridled nail-tail wallaby"]), col = alpha("#CCCC00", 0.2), border = "#CCCC00")
+polygon(c(polys$PC1[polys$Group=="Northern nail-tail wallaby"]), c(polys$PC2[polys$Group=="Northern nail-tail wallaby"]), col = alpha("#FFFF00", 0.2), border = "#FFFF00")
+polygon(c(polys$PC1[polys$Group=="Short-eared rock-wallaby"]), c(polys$PC2[polys$Group=="Short-eared rock-wallaby"]), col = alpha("#FF33CC", 0.2), border = "#FF33CC")
+polygon(c(polys$PC1[polys$Group=="Black-flanked rock-wallaby"]), c(polys$PC2[polys$Group=="Black-flanked rock-wallaby"]), col = alpha("#CC0066", 0.2), border = "#CC0066")
+polygon(c(polys$PC1[polys$Group=="Rothschild's rock-wallaby"]), c(polys$PC2[polys$Group=="Rothschild's rock-wallaby"]), col = alpha("#FFCCCC", 0.2), border = "#FFCCCC")
+
+abline(v=0, lty=2, col="grey50")
+abline(h=0, lty=2, col="grey50")
+
+remove(chull, polys)
+```
+
+```{r PC1 & PC2 loadings}
+PC_loadings <- data.frame(PCA$rotation)
+barplot(PC_loadings$PC1, col = "#33FFFF", xlab = "Measurements", ylab = "PC1 Loadings", main = "Medium Macropod Astragali - PC1 Loadings", names.arg = rownames(PC_loadings))
+barplot(PC_loadings$PC2, col = "#33FFFF", xlab = "Measurements", ylab = "PC2 Loadings", main = "Medium Macropod Astragali - PC2 Loadings", names.arg = rownames(PC_loadings))
+remove(PC_loadings)
+```
+
+##Small Macropod PCA
+
+```{r Create groups}
+Smallspc <- LSR.Small$Group[1:68]
+Smallspc <- gsub("Burrowing bettong", "#CCCCCC", Smallspc)
+Smallspc <- gsub("Brush-tailed bettong", "#666666", Smallspc)
+Smallspc <- gsub("Spectacled hare-wallaby", "#33FFFF", Smallspc)
+Smallspc <- gsub("Rufous hare-wallaby", "#00FFCC", Smallspc)
+Smallspc <- gsub("Banded hare-wallaby", "#339999", Smallspc)
+Smallspc <- gsub("Nabarlek", "#FFCCFF", Smallspc)
+Smallspc2 <- LSR.Small$Genus[69:78] 
+Smallspc2 <- gsub("Boodie", "#000000", Smallspc2)
+Smallspc <- c(Smallspc, Smallspc2)
+remove(Smallspc2)
+Smallspc
+
+Smallage <- LSR.Small$Age
+Smallage <- (gsub("Juvenile", 18, Smallage))
+Smallage <- (gsub("Subadult", 17, Smallage))
+Smallage <- (gsub("Adult", 16, Smallage))
+Smallage <- ifelse(Smallage <16, 15, Smallage)
+Smallage <- ifelse(Smallage >18, 15, Smallage)
+Smallage <- ifelse(is.na(Smallage), 15, Smallage)
+Smallage <- as.numeric(Smallage)
+Smallage
+
+Smallgenus <- LSR.Small$Genus
+Smallgenus <-gsub("Bettongia", "#666666", Smallgenus)
+Smallgenus <-gsub("Lagorchestes", "#33FFFF", Smallgenus)
+Smallgenus <-gsub("Lagostrophus", "#339999", Smallgenus)
+Smallgenus <-gsub("Petrogale", "#CC0066", Smallgenus)
+Smallgenus <-gsub("Boodie", "#000000", Smallgenus)
+Smallgenus
+```
+
+```{r #Plot PC1 vs PC2}
+PCA <- prcomp(LSR.Small[,10:16])
+sum.PCA <- summary(PCA)
+
+chull <- cbind(LSR.Small[,1:8], PCA$x[,1:2])
+polys <- ddply(chull, .(Group), function(chull) chull[chull(chull$PC1, chull$PC2), ])
+
+plot(PCA$x[,2] ~ PCA$x[,1], 
+     pch=Smallage,
+     col=Smallspc,
+     xlab=paste("PC 1 (", round(sum.PCA$importance[2]*100, 1), "%)", sep = ""), 
+     ylab=paste("PC 2 (", round(sum.PCA$importance[5]*100, 1), "%)", sep = ""), 
+     asp=1, 
+     cex=3)
+
+text(PCA$x[69:78,2]~PCA$x[69:78,1], labels=LSR.Small$Specimen_ID[69:78], pos=c(1,3,2,4), cex=1.5) 
+
+polygon(c(polys$PC1[polys$Group=="Burrowing bettong"]), c(polys$PC2[polys$Group=="Burrowing bettong"]), col = alpha("#CCCCCC", 0.2), border = "#CCCCCC")
+polygon(c(polys$PC1[polys$Group=="Brush-tailed bettong"]), c(polys$PC2[polys$Group=="Brush-tailed bettong"]), col = alpha("#666666", 0.2), border = "#666666")
+polygon(c(polys$PC1[polys$Group=="Rufous hare-wallaby"]), c(polys$PC2[polys$Group=="Rufous hare-wallaby"]), col = alpha("#00FFCC", 0.2), border = "#00FFCC")
+polygon(c(polys$PC1[polys$Group=="Banded hare-wallaby"]), c(polys$PC2[polys$Group=="Banded hare-wallaby"]), col = alpha("#339999", 0.2), border = "#339999")
+polygon(c(polys$PC1[polys$Group=="Nabarlek"]), c(polys$PC2[polys$Group=="Nabarlek"]), col = alpha("#FFCCFF", 0.2), border = "#FFCCFF")
+polygon(c(polys$PC1[polys$Group=="Spectacled hare-wallaby"]), c(polys$PC2[polys$Group=="Spectacled hare-wallaby"]), col = alpha("#33FFFF", 0.2), border = "#33FFFF")
+
+abline(v=0, lty=2, col="grey50")
+abline(h=0, lty=2, col="grey50")
+
+remove(chull, polys)
+```
+
+```{r PC1 & PC2 loadings}
+PC_loadings <- data.frame(PCA$rotation)
+barplot(PC_loadings$PC1, col = "#666666", xlab = "Measurements", ylab = "PC1 Loadings", main = "Small Macropod Astragali - PC1 Loadings", names.arg = rownames(PC_loadings))
+barplot(PC_loadings$PC2, col = "#666666", xlab = "Measurements", ylab = "PC2 Loadings", main = "Small Macropod Astragali - PC2 Loadings", names.arg = rownames(PC_loadings))
+remove(PC_loadings)
+```
+
+##Multivariate Analysis of Variance
+
+```{r Test for multivariate normality}
+MV.norm <- Data.train[,c(1, 9:15)]
+MVN = mvn(data = MV.norm, subset = "Genus", mvnTest = "mardia",
+             multivariatePlot = "qq", multivariateOutlierMethod = "adj",
+             showOutliers = TRUE, showNewData = TRUE)
+MVN$multivariateNormality
+```
+
+```{r Test for homogeneity of variance-covariance matrix}
+box_m(MV.norm[,-1], MV.norm[,1])
+remove(MV.norm, MVN)
+```
+
+```{r Large Macropod MANOVAs}
+tmp <- prcomp(LSR.Large[,10:16])
+LargeMacrpd <- cbind(LSR.Large[,1:9], tmp$x)
+summary(tmp)
+remove(tmp)
+
+LargeMacrpd$Age = str_replace_all(LargeMacrpd$Age,"Juvenile","Immature")
+LargeMacrpd$Age = str_replace_all(LargeMacrpd$Age,"Subadult","Immature")
+Ontogeny <- filter(LargeMacrpd, Age != "NA")
+Ontogeny.LargeGenus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Ontogeny)
+
+ #Agile Wallaby (Notamacropus agilis)
+Nagilis <- filter(LargeMacrpd, Group == "Agile wallaby")
+
+Allom.Nagilis <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Nagilis)
+
+Nagilis$Age = str_replace_all(Nagilis$Age,"Juvenile","Immature")
+Nagilis$Age = str_replace_all(Nagilis$Age,"Subadult","Immature")
+Nagilis <- filter(Nagilis, Age != "NA")
+Ontogeny.Nagilis <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Nagilis)
+
+  #Wallaroos & Red kangaroos (Osphranter species )
+Osphranter <- filter(LargeMacrpd, Genus == "Osphranter")
+Osphranter$Age = str_replace_all(Osphranter$Age,"Juvenile","Immature")
+Osphranter$Age = str_replace_all(Osphranter$Age,"Subadult","Immature")
+Osphranter <- filter(Osphranter, Age != "NA")
+Ontogeny.Osphranter <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Osphranter)
+
+  #Common wallaroo (Osphranter robustus)
+Orobustus <- filter(LargeMacrpd, Group == "Common wallaroo")
+Orobustus$Island = str_replace_all(Orobustus$Species,"robustus robustus","Mainland")
+Orobustus$Island = str_replace_all(Orobustus$Species,"robustus","Mainland")
+Orobustus$Island = str_replace_all(Orobustus$Species,"robustus erubescens","Mainland")
+Orobustus$Island = str_replace_all(Orobustus$Species,"robustus woodwardi","Mainland")
+Orobustus$Island = str_replace_all(Orobustus$Species,"robustus isabellinus","Island")
+Shape.OrobSubsp <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Island, data = Orobustus)
+
+Allom.Orobustus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Orobustus)
+
+Orobustus <- filter(Osphranter, Group == "Common wallaroo")
+Ontogeny.Orobustus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Orobustus)
+
+  #Red kangaroo (Osphranter rufus)
+Orufus <- filter(LargeMacrpd, Group == "Red kangaroo")
+
+Allom.Orufus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Orufus)
+
+Orufus$Age = str_replace_all(Orufus$Age,"Juvenile","Immature")
+Orufus$Age = str_replace_all(Orufus$Age,"Subadult","Immature")
+Orufus <- filter(Orufus, Age != "NA")
+Ontogeny.Orufus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Orufus)
+
+  #Western grey kangaroo (Macropus fuliginosus)
+Mfuliginosus <- filter(LargeMacrpd, Group == "W. grey kangaroo")
+
+Allom.Mfuliginosus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Mfuliginosus)
+
+Mfuliginosus$Age = str_replace_all(Mfuliginosus$Age,"Juvenile","Immature")
+Mfuliginosus$Age = str_replace_all(Mfuliginosus$Age,"Subadult","Immature")
+Mfuliginosus <- filter(Mfuliginosus, Age != "NA")
+Ontogeny.Mfuliginosus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Mfuliginosus)
+
+#Summary of MANOVAs
+LargeMacropod.Manovas <- data.frame('Taxa'= character(0),'MANOVA' = character(0), 'df1' = integer(0),'df2' = integer(0), "F Stat" = integer(0), "p"= integer(0))
+LargeMacropod.Manovas[1,] <- rbind(LargeMacropod.Manovas, c("All Large Macropods","Shape ~ Age", round(summary(Ontogeny.LargeGenus)$stats[1,c(4,5,3,6)],3)))
+
+LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Agile wallaby","Shape ~ Size", round(summary(Allom.Nagilis)$stats[1,c(4,5,3,6)],3)))
+LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Agile wallaby","Shape ~ Age", round(summary(Ontogeny.Nagilis)$stats[1,c(4,5,3,6)],3)))
+
+LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Osphranter species","Shape ~ Age", round(summary(Ontogeny.Osphranter)$stats[1,c(4,5,3,6)],3)))
+
+LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Common wallaroo","Shape ~ Subspecies", round(summary(Shape.OrobSubsp)$stats[1,c(4,5,3,6)],3)))
+LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Common wallaroo","Shape ~ Size", round(summary(Allom.Orobustus)$stats[1,c(4,5,3,6)],3)))
+LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Common wallaroo","Shape ~ Age", round(summary(Ontogeny.Orobustus)$stats[1,c(4,5,3,6)],3)))
+
+LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Red kangaroo","Shape ~ Size", round(summary(Allom.Orufus)$stats[1,c(4,5,3,6)],3)))
+LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Red kangaroo","Shape ~ Age", round(summary(Ontogeny.Orufus)$stats[1,c(4,5,3,6)],3)))
+
+LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Western grey kangaroo","Shape ~ Size", round(summary(Allom.Mfuliginosus)$stats[1,c(4,5,3,6)],3)))
+LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Western grey kangaroo","Shape ~ Age", round(summary(Ontogeny.Mfuliginosus)$stats[1,c(4,5,3,6)],3)))
+
+num <- as.numeric(LargeMacropod.Manovas[,3])
+den <- as.numeric(LargeMacropod.Manovas[,4])
+QF <- qf(0.01, num, den)
+Fcritical <- LargeMacropod.Manovas[,5] > QF
+LargeMacropod.Manovas <- cbind(LargeMacropod.Manovas[,1:4], Fcritical, LargeMacropod.Manovas[,5:6])
+colnames(LargeMacropod.Manovas)[5] <- 'F>Fcritical at 0.01'
+
+LargeMacropod.Manovas
+
+remove(den, Fcritical, num, QF, Allom.Mfuliginosus, Allom.Nagilis, Allom.Orobustus, Allom.Orufus, LargeMacrpd, Mfuliginosus, Nagilis, Ontogeny, Ontogeny.LargeGenus, Ontogeny.Mfuliginosus, Ontogeny.Nagilis, Ontogeny.Orobustus, Ontogeny.Orufus, Ontogeny.Osphranter, Orobustus, Orufus, Osphranter,  Shape.OrobSubsp)
+
+```
+
+```{r Medium Macropod MANOVAs}
+#Shape variation between medium genera
+tmp <- prcomp(LSR.Medium[1:58,10:16])
+MediumMacrpd <- cbind(LSR.Medium[1:58,1:9], tmp$x)
+summary(tmp)
+remove(tmp)
+
+MediumMacrpd$Age = str_replace_all(MediumMacrpd$Age,"Juvenile","Immature")
+MediumMacrpd$Age = str_replace_all(MediumMacrpd$Age,"Subadult","Immature")
+Ontogeny <- filter(MediumMacrpd, Age != "NA")
+Ontogeny.MediumGenus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Ontogeny)
+
+#Nail-tail wallaby (Onychogalea) species
+Onychogalea <- filter(MediumMacrpd, Genus == "Onychogalea")
+Onychogalea$Age = str_replace_all(Onychogalea$Age,"Juvenile","Immature")
+Onychogalea$Age = str_replace_all(Onychogalea$Age,"Subadult","Immature")
+Onychogalea <- filter(Onychogalea, Age != "NA")
+Ontogeny.Onychogalea <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Onychogalea)
+
+  #Rock-wallaby (Petrogale) species
+Petrogale <- filter(MediumMacrpd, Genus == "Petrogale")
+Petrogale <- filter(Petrogale, Size != "Small")
+Petrogale$Age = str_replace_all(Petrogale$Age,"Juvenile","Immature")
+Petrogale$Age = str_replace_all(Petrogale$Age,"Subadult","Immature")
+Petrogale <- filter(Petrogale, Age != "NA")
+Ontogeny.Petrogale <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Petrogale)
+
+  #Black-flanked rock-wallaby (Petrogale lateralis)
+Plateralis <- filter(MediumMacrpd, Group == "Black-flanked rock-wallaby")
+Allom.Plateralis <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Plateralis)
+Ontogeny.Plateralis <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Plateralis)
+
+  #Spectacled hare-wallaby
+Lconspicillatus <- filter(MediumMacrpd, Group == "Spectacled hare-wallaby")
+Allom.Lconspicillatus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Lconspicillatus)
+
+Lconspicillatus$Age = str_replace_all(Lconspicillatus$Age,"Juvenile","Immature")
+Lconspicillatus$Age = str_replace_all(Lconspicillatus$Age,"Subadult","Immature")
+Lconspicillatus <- filter(Lconspicillatus, Age != "NA")
+Ontogeny.Lconspicillatus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Lconspicillatus)
+
+#Summary of MANOVAs
+MediumMacropod.Manovas <- data.frame('Taxa'= character(0),'MANOVA' = character(0), 'df1' = integer(0),'df2' = integer(0), "F Stat" = integer(0), "p"= integer(0))
+MediumMacropod.Manovas[1,] <- rbind(MediumMacropod.Manovas, c("All Medium Macropods","Shape ~ Age", round(summary(Ontogeny.MediumGenus)$stats[1,c(4,5,3,6)],3)))
+MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Onychogalea species","Shape ~ Age", round(summary(Ontogeny.Onychogalea)$stats[1,c(4,5,3,6)],3)))
+MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Petrogale species","Shape ~ Age", round(summary(Ontogeny.Petrogale)$stats[1,c(4,5,3,6)],3)))
+MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Black-flanked rock-wallaby","Shape ~ Size", round(summary(Allom.Plateralis)$stats[1,c(4,5,3,6)],3)))
+MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Black-flanked rock-wallaby","Shape ~ Age", round(summary(Ontogeny.Plateralis)$stats[1,c(4,5,3,6)],3)))
+MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Spectacled hare-wallaby","Shape ~ Size", round(summary(Allom.Lconspicillatus)$stats[1,c(4,5,3,6)],3)))
+MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Spectacled hare-wallaby","Shape ~ Age", round(summary(Ontogeny.Lconspicillatus)$stats[1,c(4,5,3,6)],3)))
+num <- as.numeric(MediumMacropod.Manovas[,3])
+den <- as.numeric(MediumMacropod.Manovas[,4])
+QF <- qf(0.01, num, den)
+Fcritical <- MediumMacropod.Manovas[,5] > QF
+MediumMacropod.Manovas <- cbind(MediumMacropod.Manovas[,1:4], Fcritical, MediumMacropod.Manovas[,5:6])
+colnames(MediumMacropod.Manovas)[5] <- 'F>Fcritical at 0.01'
+
+MediumMacropod.Manovas
+
+remove(Allom.Lconspicillatus, Allom.Plateralis, Lconspicillatus, MediumMacrpd, Ontogeny, Ontogeny.MediumGenus, Ontogeny.Onychogalea, Ontogeny.Petrogale, Ontogeny.Plateralis, Ontogeny.Lconspicillatus, Onychogalea, Petrogale, Plateralis, den, num, Fcritical, QF)
+```
+
+```{r Small macropod MANOVAs}
+  #Shape variation between small genera
+tmp <- prcomp(LSR.Small[1:68,10:16])
+SmallMacrpd <- cbind(LSR.Small[1:68,1:9], tmp$x)
+summary(tmp)
+remove(tmp)
+
+SmallMacrpd$Age = str_replace_all(SmallMacrpd$Age,"Juvenile","Immature")
+SmallMacrpd$Age = str_replace_all(SmallMacrpd$Age,"Subadult","Immature")
+Ontogeny <- filter(SmallMacrpd, Age != "NA")
+Ontogeny.SmallGenus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Ontogeny)
+
+  #Bettongia species
+Bettongia <- filter(SmallMacrpd, Genus == "Bettongia")
+Bettongia$Age = str_replace_all(Bettongia$Age,"Juvenile","Immature")
+Bettongia$Age = str_replace_all(Bettongia$Age,"Subadult","Immature")
+Bettongia <- filter(Bettongia, Age != "NA")
+Ontogeny.Bettongia <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Bettongia)
+
+  #Brush-tailed bettong
+Bpenicillata <- filter(SmallMacrpd, Group == "Brush-tailed bettong")
+
+Allom.Bpenicillata <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Bpenicillata)
+
+Bpenicillata$Age = str_replace_all(Bpenicillata$Age,"Juvenile","Immature")
+Bpenicillata$Age = str_replace_all(Bpenicillata$Age,"Subadult","Immature")
+Bpenicillata <- filter(Bpenicillata, Age != "NA")
+Ontogeny.Bpenicillata <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Bpenicillata)
+
+Bpenicillata <- filter(SmallMacrpd, Group == "Brush-tailed bettong")
+Bpenicillata <- filter(Bpenicillata, Sex != "NA")
+Sex.Bpenicillata <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Sex, data = Bpenicillata)
+
+  #Bettongia lesueur
+Blesueur <- filter(SmallMacrpd, Group == "Burrowing bettong")
+
+Allom.Blesueur <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Blesueur)
+
+  #Lagorchestes spp.
+Lagorchestes <- filter(SmallMacrpd, Genus == "Lagorchestes")
+
+Lagorchestes$Age = str_replace_all(Lagorchestes$Age,"Juvenile","Immature")
+Lagorchestes$Age = str_replace_all(Lagorchestes$Age,"Subadult","Immature")
+Lagorchestes <- filter(Lagorchestes, Age != "NA")
+Ontogeny.Lagorchestes <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Lagorchestes)
+
+  #Rufous hare-wallaby
+Lhirsutus <- filter(SmallMacrpd, Group == "Rufous hare-wallaby")
+Lhirsutus$Island = str_replace_all(Lhirsutus$Species,"hirsutus","Mainland")
+Lhirsutus$Island = str_replace_all(Lhirsutus$Species,"hirsutus bernieri","Island")
+Lhirsutus$Island = str_replace_all(Lhirsutus$Species,"hirsutus dorreae","Island")
+Shape.LhirsutsSubsp <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Island, data = Lhirsutus)
+
+Allom.Lhirsutus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Lhirsutus)
+
+Lhirsutus$Age = str_replace_all(Lhirsutus$Age, "Juvenile", "Immature")
+Lhirsutus$Age = str_replace_all(Lhirsutus$Age, "Subadult", "Immature")
+Lhirsutus <- filter(Lhirsutus, Age != "NA")
+Ontogeny.Lhirsutus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Lhirsutus)
+
+#Summary of Small Macropod MANOVAs
+SmallMacropod.Manovas <- data.frame('Taxa'= character(0),'MANOVA' = character(0), 'df1' = integer(0),'df2' = integer(0), "F Stat" = integer(0), "p"= integer(0))
+SmallMacropod.Manovas[1,] <- rbind(SmallMacropod.Manovas, c("All Small Macropods","Shape ~ Age", round(summary(Ontogeny.SmallGenus)$stats[1,c(4,5,3,6)],3)))
+SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Bettongia species","Shape ~ Age", round(summary(Ontogeny.Bettongia)$stats[1,c(4,5,3,6)],3)))
+SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Brush-tailed bettong","Shape ~ Size", round(summary(Allom.Bpenicillata)$stats[1,c(4,5,3,6)],3)))
+SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Brush-tailed bettong","Shape ~ Age", round(summary(Ontogeny.Bpenicillata)$stats[1,c(4,5,3,6)],3)))
+SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Brush-tailed bettong","Shape ~ Sex", round(summary(Sex.Bpenicillata)$stats[1,c(4,5,3,6)],3)))
+SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Burrowing bettong","Shape ~ Size", round(summary(Allom.Blesueur)$stats[1,c(4,5,3,6)],3)))
+SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Lagorchestes species","Shape ~ Age", round(summary(Ontogeny.Lagorchestes)$stats[1,c(4,5,3,6)],3)))
+SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Rufous hare-wallaby","Shape ~ Sub-Species", round(summary(Shape.LhirsutsSubsp)$stats[1,c(4,5,3,6)],3)))
+SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Rufous hare-wallaby","Shape ~ Size", round(summary(Allom.Lhirsutus)$stats[1,c(4,5,3,6)],3)))
+SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Rufous hare-wallaby","Shape ~ Age", round(summary(Ontogeny.Lhirsutus)$stats[1,c(4,5,3,6)],3)))
+num <- as.numeric(SmallMacropod.Manovas[,3])
+den <- as.numeric(SmallMacropod.Manovas[,4])
+QF <- qf(0.01, num, den)
+Fcritical <- SmallMacropod.Manovas[,5] > QF
+SmallMacropod.Manovas <- cbind(SmallMacropod.Manovas[,1:4], Fcritical, SmallMacropod.Manovas[,5:6])
+colnames(SmallMacropod.Manovas)[5] <- 'F>Fcritical at 0.01'
+
+SmallMacropod.Manovas
+
+remove(Allom.Blesueur, Allom.Bpenicillata, Allom.Lhirsutus, Bettongia, Blesueur, Bpenicillata, Lagorchestes, Lhirsutus, Ontogeny, Ontogeny.Bettongia, Ontogeny.Bpenicillata, Ontogeny.Lagorchestes, Ontogeny.Lhirsutus, Ontogeny.SmallGenus, Sex.Bpenicillata, Shape.LhirsutsSubsp, SmallMacrpd, den, num, Fcritical, QF)
+```
+
+##Large Macropods - Linear Discriminant Analysis (LDA)
+
+```{r Cross Validated LDA on Form (size included) - by Genus}
+Sub.train <- rbind(filter(Data.train, Size == "Large"), filter(Data.train, Group == "Northern nail-tail wallaby"))
+lda.form.genus <- lda(Sub.train[,9:15], Sub.train$Genus, CV=T)
+Hit.ratio <- length(which(lda.form.genus$class==Sub.train$Genus))/length(Sub.train$Genus)
+Hit.ratio
+CVtable.large <- table(Sub.train$Genus, lda.form.genus$class)
+CVtable.large
+
+#Hit ratio must be > Maximum Chance Criterion +25% (Ramayah et al. 2014)
+tmp <- lda(Sub.train[,9:15], Sub.train$Genus, CV=F)
+Cmax <- as.numeric(sort(tmp$counts, decreasing = TRUE))
+Cmax <- (Cmax[1]/tmp$N)*1.25
+
+#Hit ratio must be > Proportional Chance Criterion + 25% (Sanchez 1974; Kovarovic et al. 2011; Ramayah et al. 2014)
+Cpro <- (sum(tmp$prior^2))*1.25
+
+#Press Q statistic (Ramayah et al. 2014)
+PressQ <- ((tmp$N - ((tmp$N*Hit.ratio)*(length(tmp$lev))))^2)/((tmp$N)*((length(tmp$lev)-1)))
+PressQ >= qchisq(0.01, (length(tmp$lev)-1))
+
+CV.genus.form <- data.frame('Element' = character(0), 'Size' = character(0), 'Hit Ratio' = integer(0), 'Cmax+25' = integer(0), 'Cpro+25' = integer(0), 'Press.Q'= integer(0))
+CV.genus.form[1,] <- rbind(CV.genus.form, c("Astragalus", "Large", round(Hit.ratio,2), round(Cmax,2), round(Cpro,2), round(PressQ,2)))
+remove(tmp, Hit.ratio, Cmax, Cpro, PressQ)
+CV.genus.form
+```
+
+```{r plot LDA.form by Genus }
+lda.form.genus <- lda(Sub.train[,9:15], Sub.train$Genus, CV=F)
+lda.form.train.predict <- predict(lda.form.genus)
+lda.form.plot <- cbind(Sub.train[,1:8], lda.form.train.predict$x) 
+
+chull <- lda.form.plot
+polys <- ddply(chull, .(Genus), function(chull) chull[chull(chull$LD1, chull$LD2), ])
+
+plot(lda.form.plot$LD2 ~ lda.form.plot$LD1,
+     pch=Largeage,
+     col=Largespc,
+     xlab=("LD1 50.78%"),
+     ylab=("LD2 44.36%"),
+     asp = 1,
+     cex=3)
+
+polygon(c(polys$LD1[polys$Genus=="Onychogalea"]), c(polys$LD2[polys$Genus=="Onychogalea"]), col = alpha("#FFFF00", 0.2), border = "#FFFF00")
+polygon(c(polys$LD1[polys$Genus=="Macropus"]), c(polys$LD2[polys$Genus=="Macropus"]), col = alpha("#FF6633", 0.2), border = "#FF6633")
+polygon(c(polys$LD1[polys$Genus=="Notamacropus"]), c(polys$LD2[polys$Genus=="Notamacropus"]), col = alpha("#0000FF", 0.2), border = "#0000FF")
+polygon(c(polys$LD1[polys$Genus=="Osphranter"]), c(polys$LD2[polys$Genus=="Osphranter"]), col = alpha("#00FF00", 0.2), border = "#00FF00")
+
+abline(v=0, lty=2, col="grey50")
+abline(h=0, lty=2, col="grey50")
+```
+
+```{r LD1 & LD2 loadings LDA.form.genus}
+LD_loadings <- data.frame(lda.form.genus$scaling)
+barplot(LD_loadings$LD1, col = "#006600", xlab = "Measurements", ylab = "LD1 Loadings (50.78% variance)", main = "Large Macropod Astragali - LD1 Loadings", names.arg = rownames(LD_loadings))
+barplot(LD_loadings$LD2, col = "#006600", xlab = "Measurements", ylab = "LD2 Loadings (44.36% variance)", main = "Large Macropod Astragali - LD2 Loadings", names.arg = rownames(LD_loadings))
+remove(chull, LD_loadings, lda.form.genus, lda.form.plot, lda.form.train.predict, polys, Sub.train)
+```      
+
+##Medium Macropods - Linear Discriminant Analysis (LDA)
+```{r Cross Validated LDA on Form (size included) - by Genus}
+Sub.train <- filter(Data.train, Size == "Medium")
+
+lda.form.genus <- lda(Sub.train[,9:15], Sub.train$Genus, CV=T)
+Hit.ratio <- length(which(lda.form.genus$class==Sub.train$Genus))/length(Sub.train$Genus)
+Hit.ratio
+CVtable.medium <- table(Sub.train$Genus, lda.form.genus$class)
+CVtable.medium
+
+#Hit ratio must be > Maximum Chance Criterion +25% (Ramayah et al. 2014)
+tmp <- lda(Sub.train[,9:15], Sub.train$Genus, CV=F)
+Cmax <- as.numeric(sort(tmp$counts, decreasing = TRUE))
+Cmax <- (Cmax[1]/tmp$N)*1.25
+
+#Hit ratio must be > Proportional Chance Criterion + 25% (Sanchez 1974; Kovarovic et al. 2011; Ramayah et al. 2014)
+Cpro <- (sum(tmp$prior^2))*1.25
+
+#Press Q statistic (Ramayah et al. 2014)
+PressQ <- ((tmp$N - ((tmp$N*Hit.ratio)*(length(tmp$lev))))^2)/((tmp$N)*((length(tmp$lev)-1)))
+PressQ >= qchisq(0.01, (length(tmp$lev)-1))
+
+CV.genus.form <- rbind(CV.genus.form, c("Astragalus", "Medium", round(Hit.ratio,2), round(Cmax,2), round(Cpro,2), round(PressQ,2)))
+CV.genus.form
+remove(tmp, Hit.ratio, Cmax, Cpro, PressQ)
+```
+
+```{r Predict medium archaeological specimens genus membership}
+Arch <- Data.arch[c(4, 5, 13),]
+lda.form.genus <-lda(Sub.train[,9:15], Sub.train$Genus, CV=F) 
+lda.form.train.predict <- predict(lda.form.genus)
+lda.form.arch.predict <- predict(lda.form.genus, Arch[,c(9:15)])
+Medium.arch.predict <- lda.form.arch.predict$posterior
+Medium.arch.predict
+```
+
+```{r plot LDA.form on Genus and compare archaeological specimens}
+lda.form.plot <- cbind(Sub.train[,1:8], lda.form.train.predict$x) 
+tmp <- cbind(Arch[,1:8], lda.form.arch.predict$x)
+lda.form.plot <- rbind(lda.form.plot, tmp)
+remove(tmp)
+
+chull <- lda.form.plot[1:58,]
+polys <- ddply(chull, .(Genus), function(chull) chull[chull(chull$LD1, chull$LD2), ])
+
+plot(lda.form.plot$LD2 ~ lda.form.plot$LD1,
+     pch=Mediumage,
+     col=Mediumspc,
+     xlab=("LD1 84.13%"),
+     ylab=("LD2 15.87%"),
+     asp = 1,
+     cex=3)
+
+text(lda.form.plot$LD2[59:61]~lda.form.plot$LD1[59:61], labels=lda.form.plot$Specimen_ID[59:61], pos=c(1,3,2,4), cex=1.5)
+
+polygon(c(polys$LD1[polys$Genus=="Lagorchestes"]), c(polys$LD2[polys$Genus=="Lagorchestes"]), col = alpha("#33FFFF", 0.2), border = "#33FFFF")
+polygon(c(polys$LD1[polys$Genus=="Onychogalea"]), c(polys$LD2[polys$Genus=="Onychogalea"]), col = alpha("#FFFF00", 0.2), border = "#FFFF00")
+polygon(c(polys$LD1[polys$Genus=="Petrogale"]), c(polys$LD2[polys$Genus=="Petrogale"]), col = alpha("#CC0066", 0.2), border = "#CC0066")
+
+abline(v=0, lty=2, col="grey50")
+abline(h=0, lty=2, col="grey50")
+```
+
+```{r LD1 & LD2 loadings LDA.form.genus}
+LD_loadings <- data.frame(lda.form.genus$scaling)
+barplot(LD_loadings$LD1, col = "#33FFFF", xlab = "Measurements", ylab = "LD1 Loadings (84.13% variance)", main = "Medium Macropod Astragali - LD1 Loadings", names.arg = rownames(LD_loadings))
+barplot(LD_loadings$LD2, col = "#33FFFF", xlab = "Measurements", ylab = "LD2 Loadings (15.87% variance)", main = "Medium Macropod Astragali - LD2 Loadings", names.arg = rownames(LD_loadings))
+
+remove(Arch, chull, LD_loadings, lda.form.genus, lda.form.plot, lda.form.train.predict, polys, Sub.train)
+```      
+
+##Small Macropods - Linear Discriminant Analysis (LDA)
+
+```{r Cross Validated LDA on Form (size included) - by Genus}
+Sub.train <- rbind(filter(Data.train, Size == "Small"), filter(Data.train, Group == "Spectacled hare-wallaby"))
+lda.form.genus <- lda(Sub.train[,9:15], Sub.train$Genus, CV=T)
+Hit.ratio <- length(which(lda.form.genus$class==Sub.train$Genus))/length(Sub.train$Genus)
+Hit.ratio
+CVtable.small <- table(Sub.train$Genus, lda.form.genus$class)
+CVtable.small
+
+#Hit ratio must be > Maximum Chance Criterion +25% (Ramayah et al. 2014)
+tmp <- lda(Sub.train[,9:15], Sub.train$Genus, CV=F)
+Cmax <- as.numeric(sort(tmp$counts, decreasing = TRUE))
+Cmax <- (Cmax[1]/tmp$N)*1.25
+
+#Hit ratio must be > Proportional Chance Criterion + 25% (Sanchez 1974; Kovarovic et al. 2011; Ramayah et al. 2014)
+Cpro <- (sum(tmp$prior^2))*1.25
+
+#Press Q statistic (Ramayah et al. 2014)
+PressQ <- ((tmp$N - ((tmp$N*Hit.ratio)*(length(tmp$lev))))^2)/((tmp$N)*((length(tmp$lev)-1)))
+PressQ >= qchisq(0.01, (length(tmp$lev)-1))
+
+CV.genus.form <- rbind(CV.genus.form, c("Astragalus", "Small", round(Hit.ratio,2), round(Cmax,2), round(Cpro,2), round(PressQ, 2)))
+CV.genus.form
+remove(tmp, Hit.ratio, Cmax, Cpro, PressQ)
+```
+
+```{r Predict small archaeological specimen genus membership}
+Arch <- Data.arch[-c(4, 5, 13),] 
+lda.form.genus<-lda(Sub.train[,9:15], Sub.train$Genus, CV=F) 
+lda.form.train.predict <- predict(lda.form.genus)
+lda.form.arch.predict <- predict(lda.form.genus, Arch[,c(9:15)])
+Small.arch.predict <- lda.form.arch.predict$posterior
+Small.arch.predict
+```
+
+```{r plot LDA.form on Genus and compare archaeological specimens}
+lda.form.plot <- cbind(Sub.train[,1:8], lda.form.train.predict$x) 
+tmp <- cbind(Arch[,1:8], lda.form.arch.predict$x)
+lda.form.plot <- rbind(lda.form.plot, tmp)
+remove(tmp)
+
+chull <- lda.form.plot[1:68,] 
+polys <- ddply(chull, .(Genus), function(chull) chull[chull(chull$LD1, chull$LD2), ])
+
+plot(lda.form.plot$LD2 ~ lda.form.plot$LD1,
+     pch=Smallage,
+     col=Smallspc,
+     xlab=("LD1 88.87%"),
+     ylab=("LD2 6.29%"),
+     asp = 1,
+     cex=3)
+
+text(lda.form.plot$LD2[69:78]~lda.form.plot$LD1[69:78], labels=lda.form.plot$Specimen_ID[69:78], pos=c(1,3,2,4), cex=1.5) 
+
+polygon(c(polys$LD1[polys$Genus=="Bettongia"]), c(polys$LD2[polys$Genus=="Bettongia"]), col = alpha("#666666", 0.2), border = "#666666")
+polygon(c(polys$LD1[polys$Genus=="Lagostrophus"]), c(polys$LD2[polys$Genus=="Lagostrophus"]), col = alpha("#339999", 0.2), border = "#339999")
+polygon(c(polys$LD1[polys$Genus=="Lagorchestes"]), c(polys$LD2[polys$Genus=="Lagorchestes"]), col = alpha("#33FFFF", 0.2), border = "#33FFFF")
+polygon(c(polys$LD1[polys$Genus=="Petrogale"]), c(polys$LD2[polys$Genus=="Petrogale"]), col = alpha("#CC0066", 0.2), border = "#CC0066")
+
+abline(v=0, lty=2, col="grey50")
+abline(h=0, lty=2, col="grey50")
+```
+
+```{r LD1 & LD2 loadings LDA.form.genus}
+LD_loadings <- data.frame(lda.form.genus$scaling)
+barplot(LD_loadings$LD1, col = "#666666", xlab = "Measurements", ylab = "LD1 Loadings (88.87% variance)", main = "Small Macropod Astragali - LD1 Loadings", names.arg = rownames(LD_loadings))
+barplot(LD_loadings$LD2, col = "#666666", xlab = "Measurements", ylab = "LD2 Loadings (6.29% variance)", main = "Small Macropod Astragali - LD2 Loadings", names.arg = rownames(LD_loadings))
+
+remove(Arch, chull, LD_loadings, lda.form.genus, lda.form.plot, lda.form.train.predict, polys, Sub.train)
+```      
+
+##Export all tables
+
+```{r Table 1A Cross validated hit ratios for each skeletal element by genus and species}
+write.csv(CV.genus.form, "Supp_Tables/Table.1A.csv")
+```
+
+```{r Table 2 Classification matrix for specimens from Boodie Cave}
+write.csv(Medium.arch.predict, "Supp_Tables/Table.2A.csv")
+write.csv(Small.arch.predict, "Supp_Tables/Table.2B.csv")
+```
+
+```{r Table S6-S8 Multivariate analysis of variance on macropod astragalus shape}
+write.csv(LargeMacropod.Manovas, "Supp_Tables/Table.S6A.csv")
+write.csv(MediumMacropod.Manovas, "Supp_Tables/Table.S7A.csv")
+write.csv(SmallMacropod.Manovas, "Supp_Tables/Table.S8A.csv")
+```
