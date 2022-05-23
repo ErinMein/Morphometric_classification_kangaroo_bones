@@ -1,0 +1,10 @@
+.png
+.Rhistory
+.rda
+.pdf
+.RData
+.ply
+*.ply
+*.RData
+*.png
+*.jpeg
