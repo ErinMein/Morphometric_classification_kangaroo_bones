@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 #Description of analyses
-#This analysis includes multivariate ordinal and statistical analyses of macropod calcanea and models the classification of archaeological specimens.
+#This analysis includes multivariate ordinal and statistical analyses of macropod calcanea and models the classification of archaeological specimens from Boodie Cave, Barrow Island, Western Australia.
 
 ```{r set library and wd}
 library(MASS)
@@ -18,8 +18,247 @@ library(Hmisc)
 library(vegan)
 library(rstatix)
 library(MVN)
+library(psych)
 
-setwd("~/Dropbox/Documents/PhD/Metric_Morphometrics/Metric_morph_R/Morphometric_classification_kangaroo_bones/Calcanea")
+setwd("~/ ## Set WD ## /Morphometric_classification_kangaroo_bones/Calcanea")
+```
+
+```{r Test Intraoperator Reliability}
+calcaneus <- read.csv("Data/Raw.test.retest.csv")
+
+L_dlCaCu1 <- ICC(calcaneus[1:67,6:8])
+L_dlCaCu2 <- ICC(calcaneus[68:131,6:8])
+L_dlCaCu3 <- ICC(calcaneus[132:180,6:8])
+L_dlCaCu <- data.frame(c('L_dlCaCu', L_dlCaCu1$results[3,2:6], L_dlCaCu2$results[3,2:6], L_dlCaCu3$results[3,2:6]))
+colnames(L_dlCaCu)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(L_dlCaCu1, L_dlCaCu2, L_dlCaCu3)
+
+B_dlCaCu1 <- ICC(calcaneus[1:67,9:11])
+B_dlCaCu2 <- ICC(calcaneus[68:131,9:11])
+B_dlCaCu3 <- ICC(calcaneus[132:180,9:11])
+B_dlCaCu <- data.frame(c('B_dlCaCu', B_dlCaCu1$results[3,2:6], B_dlCaCu2$results[3,2:6], B_dlCaCu3$results[3,2:6]))
+colnames(B_dlCaCu)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(B_dlCaCu1, B_dlCaCu2, B_dlCaCu3)
+
+H_dlCaCu1 <- ICC(calcaneus[1:67,12:14])
+H_dlCaCu2 <- ICC(calcaneus[68:131,12:14])
+H_dlCaCu3 <- ICC(calcaneus[132:180,12:14])
+H_dlCaCu <- data.frame(c('H_dlCaCu', H_dlCaCu1$results[3,2:6], H_dlCaCu2$results[3,2:6], H_dlCaCu3$results[3,2:6]))
+colnames(H_dlCaCu)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(H_dlCaCu1, H_dlCaCu2, H_dlCaCu3)
+
+B_dmCaCu1 <- ICC(calcaneus[1:67,15:17])
+B_dmCaCu2 <- ICC(calcaneus[68:131,15:17])
+B_dmCaCu3 <- ICC(calcaneus[132:180,15:17])
+B_dmCaCu <- data.frame(c('B_dmCaCu', B_dmCaCu1$results[3,2:6], B_dmCaCu2$results[3,2:6], B_dmCaCu3$results[3,2:6]))
+colnames(B_dmCaCu)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(B_dmCaCu1, B_dmCaCu2, B_dmCaCu3)
+
+H_dmCaCu1 <- ICC(calcaneus[1:67,18:20])
+H_dmCaCu2 <- ICC(calcaneus[68:131,18:20])
+H_dmCaCu3 <- ICC(calcaneus[132:180,18:20])
+H_dmCaCu <- data.frame(c('H_dmCaCu', H_dmCaCu1$results[3,2:6], H_dmCaCu2$results[3,2:6], H_dmCaCu3$results[3,2:6]))
+colnames(H_dmCaCu)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(H_dmCaCu1, H_dmCaCu2, H_dmCaCu3)
+
+B_CaCu1 <- ICC(calcaneus[1:67,21:23])
+B_CaCu2 <- ICC(calcaneus[68:131,21:23])
+B_CaCu3 <- ICC(calcaneus[132:180,21:23])
+B_CaCu <- data.frame(c('B_CaCu', B_CaCu1$results[3,2:6], B_CaCu2$results[3,2:6], B_CaCu3$results[3,2:6]))
+colnames(B_CaCu)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(B_CaCu1, B_CaCu2, B_CaCu3)
+
+H_CaCu1 <- ICC(calcaneus[1:67,24:26])
+H_CaCu2 <- ICC(calcaneus[68:131,24:26])
+H_CaCu3 <- ICC(calcaneus[132:180,24:26])
+H_CaCu <- data.frame(c('H_CaCu', H_CaCu1$results[3,2:6], H_CaCu2$results[3,2:6], H_CaCu3$results[3,2:6]))
+colnames(H_CaCu)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(H_CaCu1, H_CaCu2, H_CaCu3)
+
+L_tcd1 <- ICC(calcaneus[1:67,27:29])
+L_tcd2 <- ICC(calcaneus[68:131,27:29])
+L_tcd3 <- ICC(calcaneus[132:180,27:29])
+L_tcd <- data.frame(c('L_tcd', L_tcd1$results[3,2:6], L_tcd2$results[3,2:6], L_tcd3$results[3,2:6]))
+colnames(L_tcd)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(L_tcd1, L_tcd2, L_tcd3)
+
+H_tce1 <- ICC(calcaneus[1:67,30:32])
+H_tce2 <- ICC(calcaneus[68:131,30:32])
+H_tce3 <- ICC(calcaneus[132:180,30:32])
+H_tce <- data.frame(c('H_tce', H_tce1$results[3,2:6], H_tce2$results[3,2:6], H_tce3$results[3,2:6]))
+colnames(H_tce)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(H_tce1, H_tce2, H_tce3)
+
+B_tce1 <- ICC(calcaneus[1:67,33:35])
+B_tce2 <- ICC(calcaneus[68:131,33:35])
+B_tce3 <- ICC(calcaneus[132:180,33:35])
+B_tce <- data.frame(c('B_tce', B_tce1$results[3,2:6], B_tce2$results[3,2:6], B_tce3$results[3,2:6]))
+colnames(B_tce)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(B_tce1, B_tce2, B_tce3)
+
+L_rps1 <- ICC(calcaneus[1:67,36:38])
+L_rps2 <- ICC(calcaneus[68:131,36:38])
+L_rps3 <- ICC(calcaneus[132:180,36:38])
+L_rps <- data.frame(c('L_rps', L_rps1$results[3,2:6], L_rps2$results[3,2:6], L_rps3$results[3,2:6]))
+colnames(L_rps)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(L_rps1, L_rps2, L_rps3)
+
+B_midshaft1 <- ICC(calcaneus[1:67,39:41])
+B_midshaft2 <- ICC(calcaneus[68:131,39:41])
+B_midshaft3 <- ICC(calcaneus[132:180,39:41])
+B_midshaft <- data.frame(c('B_midshaft', B_midshaft1$results[3,2:6], B_midshaft2$results[3,2:6], B_midshaft3$results[3,2:6]))
+colnames(B_midshaft)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(B_midshaft1, B_midshaft2, B_midshaft3)
+
+H_midshaft1 <- ICC(calcaneus[1:67,42:44])
+H_midshaft2 <- ICC(calcaneus[68:131,42:44])
+H_midshaft3 <- ICC(calcaneus[132:180,42:44])
+H_midshaft <- data.frame(c('H_midshaft', H_midshaft1$results[3,2:6], H_midshaft2$results[3,2:6], H_midshaft3$results[3,2:6]))
+colnames(H_midshaft)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(H_midshaft1, H_midshaft2, H_midshaft3)
+
+B_fdl_medial1 <- ICC(calcaneus[1:67,45:47])
+B_fdl_medial2 <- ICC(calcaneus[68:131,45:47])
+B_fdl_medial3 <- ICC(calcaneus[132:180,45:47])
+B_fdl_medial <- data.frame(c('B_fdl_medial', B_fdl_medial1$results[3,2:6], B_fdl_medial2$results[3,2:6], B_fdl_medial3$results[3,2:6]))
+colnames(B_fdl_medial)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(B_fdl_medial1, B_fdl_medial2, B_fdl_medial3)
+
+B_cal1 <- ICC(calcaneus[1:67,48:50])
+B_cal2 <- ICC(calcaneus[68:131,48:50])
+B_cal3 <- ICC(calcaneus[132:180,48:50])
+B_cal <- data.frame(c('B_cal', B_cal1$results[3,2:6], B_cal2$results[3,2:6], B_cal3$results[3,2:6]))
+colnames(B_cal)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(B_cal1, B_cal2, B_cal3)
+
+L_st1 <- ICC(calcaneus[1:67,51:53])
+L_st2 <- ICC(calcaneus[68:131,51:53])
+L_st3 <- ICC(calcaneus[132:180,51:53])
+L_st <- data.frame(c('L_st', L_st1$results[3,2:6], L_st2$results[3,2:6], L_st3$results[3,2:6]))
+colnames(L_st)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(L_st1, L_st2, L_st3)
+
+H_st1 <- ICC(calcaneus[1:67,54:56])
+H_st2 <- ICC(calcaneus[68:131,54:56])
+H_st3 <- ICC(calcaneus[132:180,54:56])
+H_st <- data.frame(c('H_st', H_st1$results[3,2:6], H_st2$results[3,2:6], H_st3$results[3,2:6]))
+colnames(H_st)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(H_st1, H_st2, H_st3)
+
+L_mCaTa1 <- ICC(calcaneus[1:67,57:59])
+L_mCaTa2 <- ICC(calcaneus[68:131,57:59])
+L_mCaTa3 <- ICC(calcaneus[132:180,57:59])
+L_mCaTa <- data.frame(c('L_mCaTa', L_mCaTa1$results[3,2:6], L_mCaTa2$results[3,2:6], L_mCaTa3$results[3,2:6]))
+colnames(L_mCaTa)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(L_mCaTa1, L_mCaTa2, L_mCaTa3)
+
+B_mCaTa1 <- ICC(calcaneus[1:67,60:62])
+B_mCaTa2 <- ICC(calcaneus[68:131,60:62])
+B_mCaTa3 <- ICC(calcaneus[132:180,60:62])
+B_mCaTa <- data.frame(c('B_mCaTa', B_mCaTa1$results[3,2:6], B_mCaTa2$results[3,2:6], B_mCaTa3$results[3,2:6]))
+colnames(B_mCaTa)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(B_mCaTa1, B_mCaTa2, B_mCaTa3)
+
+L_lCaTa1 <- ICC(calcaneus[1:67,63:65])
+L_lCaTa2 <- ICC(calcaneus[68:131,63:65])
+L_lCaTa3 <- ICC(calcaneus[132:180,63:65])
+L_lCaTa <- data.frame(c('L_lCaTa', L_lCaTa1$results[3,2:6], L_lCaTa2$results[3,2:6], L_lCaTa3$results[3,2:6]))
+colnames(L_lCaTa)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(L_lCaTa1, L_lCaTa2, L_lCaTa3)
+
+B_lCaTa1 <- ICC(calcaneus[1:67,66:68])
+B_lCaTa2 <- ICC(calcaneus[68:131,66:68])
+B_lCaTa3 <- ICC(calcaneus[132:180,66:68])
+B_lCaTa <- data.frame(c('B_lCaTa', B_lCaTa1$results[3,2:6], B_lCaTa2$results[3,2:6], B_lCaTa3$results[3,2:6]))
+colnames(B_lCaTa)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(B_lCaTa1, B_lCaTa2, B_lCaTa3)
+
+B_CLAJ1 <- ICC(calcaneus[1:67,69:71])
+B_CLAJ2 <- ICC(calcaneus[68:131,69:71])
+B_CLAJ3 <- ICC(calcaneus[132:180,69:71])
+B_CLAJ <- data.frame(c('B_CLAJ', B_CLAJ1$results[3,2:6], B_CLAJ2$results[3,2:6], B_CLAJ3$results[3,2:6]))
+colnames(B_CLAJ)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(B_CLAJ1, B_CLAJ2, B_CLAJ3)
+
+H_CaFi1 <- ICC(calcaneus[1:67,72:74])
+H_CaFi2 <- ICC(calcaneus[68:131,72:74])
+H_CaFi3 <- ICC(calcaneus[132:180,72:74])
+H_CaFi <- data.frame(c('H_CaFi', H_CaFi1$results[3,2:6], H_CaFi2$results[3,2:6], H_CaFi3$results[3,2:6]))
+colnames(H_CaFi)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(H_CaFi1, H_CaFi2, H_CaFi3)
+
+B_CaFi1 <- ICC(calcaneus[1:67,75:77])
+B_CaFi2 <- ICC(calcaneus[68:131,75:77])
+B_CaFi3 <- ICC(calcaneus[132:180,75:77])
+B_CaFi <- data.frame(c('B_CaFi', B_CaFi1$results[3,2:6], B_CaFi2$results[3,2:6], B_CaFi3$results[3,2:6]))
+colnames(B_CaFi)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(B_CaFi1, B_CaFi2, B_CaFi3)
+
+CalcaneusRep <- rbind(L_dlCaCu, B_dlCaCu, H_dlCaCu, B_dmCaCu, H_dmCaCu, B_CaCu, H_CaCu, L_tcd,
+                      H_tce, B_tce, L_rps, B_midshaft, H_midshaft, B_fdl_medial, B_cal, L_st, H_st, 
+                      L_mCaTa, B_mCaTa, L_lCaTa, B_lCaTa, B_CLAJ, H_CaFi, B_CaFi)
+remove(L_dlCaCu, B_dlCaCu, H_dlCaCu, B_dmCaCu, H_dmCaCu, B_CaCu, H_CaCu, L_tcd, 
+       H_tce, B_tce, L_rps, B_midshaft, H_midshaft, B_fdl_medial, B_cal, L_st, H_st, 
+       L_mCaTa, B_mCaTa, L_lCaTa, B_lCaTa, B_CLAJ, H_CaFi, B_CaFi)
+
+calcaneus <- calcaneus[complete.cases(calcaneus[,c(6:77)]),]
+L_dlCaCu <- (apply(calcaneus[,6:8], 1, sd))/(rowMeans(calcaneus[,6:8])) #1
+B_dlCaCu <- (apply(calcaneus[,9:11], 1, sd))/(rowMeans(calcaneus[,9:11])) #2
+H_dlCaCu <- (apply(calcaneus[,12:14], 1, sd))/(rowMeans(calcaneus[,12:14])) #3
+B_dmCaCu <- (apply(calcaneus[,15:17], 1, sd))/(rowMeans(calcaneus[,15:17])) #4
+H_dmCaCu <- (apply(calcaneus[,18:20], 1, sd))/(rowMeans(calcaneus[,18:20])) #5
+B_CaCu <- (apply(calcaneus[,21:23], 1, sd))/(rowMeans(calcaneus[,21:23])) #6
+H_CaCu <- (apply(calcaneus[,24:26], 1, sd))/(rowMeans(calcaneus[,24:26])) #7
+L_tcd <- (apply(calcaneus[,27:29], 1, sd))/(rowMeans(calcaneus[,27:29])) #8
+H_tce <- (apply(calcaneus[,30:32], 1, sd))/(rowMeans(calcaneus[,30:32])) #9
+B_tce <- (apply(calcaneus[,33:35], 1, sd))/(rowMeans(calcaneus[,33:35])) #10
+L_rps <- (apply(calcaneus[,36:38], 1, sd))/(rowMeans(calcaneus[,36:38])) #11
+B_midshaft <- (apply(calcaneus[,39:41], 1, sd))/(rowMeans(calcaneus[,39:41])) #12
+H_midshaft <- (apply(calcaneus[,42:44], 1, sd))/(rowMeans(calcaneus[,42:44])) #13
+B_fdl_medial <- (apply(calcaneus[,45:47], 1, sd))/(rowMeans(calcaneus[,45:47])) #14
+B_cal <- (apply(calcaneus[,48:50], 1, sd))/(rowMeans(calcaneus[,48:50])) #15
+L_st <- (apply(calcaneus[,51:53], 1, sd))/(rowMeans(calcaneus[,51:53])) #16
+H_st <- (apply(calcaneus[,54:56], 1, sd))/(rowMeans(calcaneus[,54:56])) #17
+L_mCaTa <- (apply(calcaneus[,57:59], 1, sd))/(rowMeans(calcaneus[,57:59])) #18
+B_mCaTa <- (apply(calcaneus[,60:62], 1, sd))/(rowMeans(calcaneus[,60:62])) #19
+L_lCaTa <- (apply(calcaneus[,63:65], 1, sd))/(rowMeans(calcaneus[,63:65])) #20
+B_lCaTa <- (apply(calcaneus[,66:68], 1, sd))/(rowMeans(calcaneus[,66:68])) #21
+B_CLAJ <- (apply(calcaneus[,69:71], 1, sd))/(rowMeans(calcaneus[,69:71])) #22
+H_CaFi <- (apply(calcaneus[,72:74], 1, sd))/(rowMeans(calcaneus[,72:74])) #23
+B_CaFi <- (apply(calcaneus[,75:77], 1, sd))/(rowMeans(calcaneus[,75:77])) #24
+CalcaneusPC <- data.frame('Variable' = character(0),'Large'=integer(0), "Medium" = integer(0), 'Small' = integer())
+CalcaneusPC[1,] <- rbind(CalcaneusPC, c("L_dlCaCu", round(mean(L_dlCaCu[1:57]),3), round(mean(L_dlCaCu[58:117]),3), round(mean(L_dlCaCu[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("B_dlCaCu", round(mean(B_dlCaCu[1:57]),3), round(mean(B_dlCaCu[58:117]),3), round(mean(B_dlCaCu[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("H_dlCaCu", round(mean(H_dlCaCu[1:57]),3), round(mean(H_dlCaCu[58:117]),3), round(mean(H_dlCaCu[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("B_dmCaCu", round(mean(B_dmCaCu[1:57]),3), round(mean(B_dmCaCu[58:117]),3), round(mean(B_dmCaCu[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("H_dmCaCu", round(mean(H_dmCaCu[1:57]),3), round(mean(H_dmCaCu[58:117]),3), round(mean(H_dmCaCu[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("B_CaCu", round(mean(B_CaCu[1:57]),3), round(mean(B_CaCu[58:117]),3), round(mean(B_CaCu[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("H_CaCu", round(mean(H_CaCu[1:57]),3), round(mean(H_CaCu[58:117]),3), round(mean(H_CaCu[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("L_tcd", round(mean(L_tcd[1:57]),3), round(mean(L_tcd[58:117]),3), round(mean(L_tcd[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("H_tce", round(mean(H_tce[1:57]),3), round(mean(H_tce[58:117]),3), round(mean(H_tce[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("B_tce", round(mean(B_tce[1:57]),3), round(mean(B_tce[58:117]),3), round(mean(B_tce[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("L_rps", round(mean(L_rps[1:57]),3), round(mean(L_rps[58:117]),3), round(mean(L_rps[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("B_midshaft", round(mean(B_midshaft[1:57]),3), round(mean(B_midshaft[58:117]),3), round(mean(B_midshaft[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("H_midshaft", round(mean(H_midshaft[1:57]),3), round(mean(H_midshaft[58:117]),3), round(mean(H_midshaft[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("B_fdl_medial", round(mean(B_fdl_medial[1:57]),3), round(mean(B_fdl_medial[58:117]),3), round(mean(B_fdl_medial[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("B_cal", round(mean(B_cal[1:57]),3), round(mean(B_cal[58:117]),3), round(mean(B_cal[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("L_st", round(mean(L_st[1:57]),3), round(mean(L_st[58:117]),3), round(mean(L_st[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("H_st", round(mean(H_st[1:57]),3), round(mean(H_st[58:117]),3), round(mean(H_st[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("L_mCaTa", round(mean(L_mCaTa[1:57]),3), round(mean(L_mCaTa[58:117]),3), round(mean(L_mCaTa[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("B_mCaTa", round(mean(B_mCaTa[1:57]),3), round(mean(B_mCaTa[58:117]),3), round(mean(B_mCaTa[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("L_lCaTa", round(mean(L_lCaTa[1:57]),3), round(mean(L_lCaTa[58:117]),3), round(mean(L_lCaTa[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("B_lCaTa", round(mean(B_lCaTa[1:57]),3), round(mean(B_lCaTa[58:117]),3), round(mean(B_lCaTa[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("B_CLAJ", round(mean(B_CLAJ[1:57]),3), round(mean(B_CLAJ[58:117]),3), round(mean(B_CLAJ[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("H_CaFi", round(mean(H_CaFi[1:57]),3), round(mean(H_CaFi[58:117]),3), round(mean(H_CaFi[118:154]),3)))
+CalcaneusPC <- rbind(CalcaneusPC, c("B_CaFi", round(mean(B_CaFi[1:57]),3), round(mean(B_CaFi[58:117]),3), round(mean(B_CaFi[118:154]),3)))
+CalcaneusPC
+
+remove(L_dlCaCu, B_dlCaCu, H_dlCaCu, B_dmCaCu, H_dmCaCu, B_CaCu, H_CaCu, L_tcd, 
+       H_tce, B_tce, L_rps, B_midshaft, H_midshaft, B_fdl_medial, B_cal, L_st, H_st, 
+       L_mCaTa, B_mCaTa, L_lCaTa, B_lCaTa, B_CLAJ, H_CaFi, B_CaFi)
+
+write.csv(CalcaneusPC, "Supp_Tables/Table.S6.2A.csv")
+write.csv(CalcaneusRep, "Supp_Tables/Table.S6.2B.csv")
 ```
 
 ```{r Import Training data}
@@ -341,31 +580,30 @@ Nagilis <- filter(LargeMacrpd, Group == "Agile wallaby")
 
 Allom.Nagilis <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ GeoMean, data = Nagilis)
 
-Nagilis$Age = str_replace_all(Nagilis$Age,"Juvenile","Immature")
-Nagilis$Age = str_replace_all(Nagilis$Age,"Subadult","Immature")
-Nagilis <- filter(Nagilis, Age != "NA")
 Ontogeny.Nagilis <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Nagilis)
+
+Nagilis <- filter(Nagilis, Sex != "NA")
+Sex.Nagilis <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Sex, data = Nagilis)
 
   #Osphranter species 
 Osphranter <- filter(LargeMacrpd, Genus == "Osphranter")
 
-Osphranter$Age = str_replace_all(Osphranter$Age,"Juvenile","Immature")
-Osphranter$Age = str_replace_all(Osphranter$Age,"Subadult","Immature")
 Osphranter <- filter(Osphranter, Age != "NA")
 Ontogeny.Osphranter <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Osphranter)
 
   #Common wallaroo
 Orobustus <- filter(LargeMacrpd, Group == "Common wallaroo")
-Orobustus$Island = str_replace_all(Orobustus$Species,"robustus robustus","Mainland")
-Orobustus$Island = str_replace_all(Orobustus$Species,"robustus","Mainland")
-Orobustus$Island = str_replace_all(Orobustus$Species,"robustus erubescens","Mainland")
-Orobustus$Island = str_replace_all(Orobustus$Species,"robustus woodwardi","Mainland")
-Orobustus$Island = str_replace_all(Orobustus$Species,"robustus isabellinus","Island")
+Orobustus$Island = Orobustus$Species
+Orobustus$Island = str_replace_all(Orobustus$Island,"robustus isabellinus","Island")
+Orobustus$Island = str_replace_all(Orobustus$Island,"robustus robustus","Mainland")
+Orobustus$Island = str_replace_all(Orobustus$Island,"robustus erubescens","Mainland")
+Orobustus$Island = str_replace_all(Orobustus$Island,"robustus woodwardi","Mainland")
+Orobustus$Island = str_replace_all(Orobustus$Island,"robustus","Mainland")
 Shape.OrobSubsp <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Island, data = Orobustus)
 
 Allom.Orobustus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ GeoMean, data = Orobustus)
 
-Orobustus <- filter(Osphranter, Group == "Common wallaroo")
+Orobustus <- filter(Orobustus, Age != "NA")
 Ontogeny.Orobustus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Orobustus)
 
   #Osphranter rufus
@@ -373,37 +611,34 @@ Orufus <- filter(LargeMacrpd, Group == "Red kangaroo")
 
 Allom.Orufus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ GeoMean, data = Orufus)
 
-Orufus$Age = str_replace_all(Orufus$Age,"Juvenile","Immature")
-Orufus$Age = str_replace_all(Orufus$Age,"Subadult","Immature")
 Orufus <- filter(Orufus, Age != "NA")
 Ontogeny.Orufus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Orufus)
+
+Orufus <- filter(LargeMacrpd, Group == "Red kangaroo")
+Orufus <- filter(Orufus, Sex != "NA")
+Sex.Orufus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Sex, data = Orufus)
 
   #Western grey kangaroo
 Mfuliginosus <- filter(LargeMacrpd, Group == "W. grey kangaroo")
 
 Allom.Mfuliginosus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ GeoMean, data = Mfuliginosus)
 
-Mfuliginosus$Age = str_replace_all(Mfuliginosus$Age,"Juvenile","Immature")
-Mfuliginosus$Age = str_replace_all(Mfuliginosus$Age,"Subadult","Immature")
 Mfuliginosus <- filter(Mfuliginosus, Age != "NA")
 Ontogeny.Mfuliginosus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Mfuliginosus)
 
 #Summary of MANOVAs
 LargeMacropod.Manovas <- data.frame('Taxa'= character(0),'MANOVA' = character(0), 'df1' = integer(0),'df2' = integer(0), "F Stat" = integer(0), "p"= integer(0))
 LargeMacropod.Manovas[1,] <- rbind(LargeMacropod.Manovas, c("All Large Macropods","Shape ~ Age", round(summary(Ontogeny.LargeGenus)$stats[1,c(4,5,3,6)],3)))
-
 LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Agile wallaby","Shape ~ Size", round(summary(Allom.Nagilis)$stats[1,c(4,5,3,6)],3)))
 LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Agile wallaby","Shape ~ Age", round(summary(Ontogeny.Nagilis)$stats[1,c(4,5,3,6)],3)))
-
+LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Agile wallaby","Shape ~ Sex", round(summary(Sex.Nagilis)$stats[1,c(4,5,3,6)],3)))
 LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Osphranter species","Shape ~ Age", round(summary(Ontogeny.Osphranter)$stats[1,c(4,5,3,6)],3)))
-
 LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Common wallaroo","Shape ~ Subspecies", round(summary(Shape.OrobSubsp)$stats[1,c(4,5,3,6)],3)))
 LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Common wallaroo","Shape ~ Size", round(summary(Allom.Orobustus)$stats[1,c(4,5,3,6)],3)))
 LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Common wallaroo","Shape ~ Age", round(summary(Ontogeny.Orobustus)$stats[1,c(4,5,3,6)],3)))
-
 LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Red kangaroo","Shape ~ Size", round(summary(Allom.Orufus)$stats[1,c(4,5,3,6)],3)))
 LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Red kangaroo","Shape ~ Age", round(summary(Ontogeny.Orufus)$stats[1,c(4,5,3,6)],3)))
-
+LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Red kangaroo","Shape ~ Sex", round(summary(Sex.Orufus)$stats[1,c(4,5,3,6)],3)))
 LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Western grey kangaroo","Shape ~ Size", round(summary(Allom.Mfuliginosus)$stats[1,c(4,5,3,6)],3)))
 LargeMacropod.Manovas <- rbind(LargeMacropod.Manovas, c("Western grey kangaroo","Shape ~ Age", round(summary(Ontogeny.Mfuliginosus)$stats[1,c(4,5,3,6)],3)))
 
@@ -416,7 +651,7 @@ colnames(LargeMacropod.Manovas)[5] <- 'F>Fcritical at 0.01'
 
 LargeMacropod.Manovas
 
-remove(Allom.Mfuliginosus, Allom.Nagilis, Allom.Orobustus, Allom.Orufus, LargeMacrpd, Mfuliginosus, Nagilis, Ontogeny, Ontogeny.LargeGenus, Ontogeny.Mfuliginosus, Ontogeny.Orobustus, Ontogeny.Nagilis, Ontogeny.Orufus, Ontogeny.Osphranter, Orobustus, Orufus, Osphranter, Shape.OrobSubsp, den, Fcritical, num, QF)
+remove(Allom.Mfuliginosus, Allom.Nagilis, Allom.Orobustus, Allom.Orufus, LargeMacrpd, Mfuliginosus, Nagilis, Ontogeny, Ontogeny.LargeGenus, Ontogeny.Mfuliginosus, Ontogeny.Orobustus, Ontogeny.Nagilis, Ontogeny.Orufus, Ontogeny.Osphranter, Orobustus, Orufus, Osphranter, Sex.Nagilis, Sex.Orufus, Shape.OrobSubsp, den, Fcritical, num, QF)
 ```
 
 ```{r Medium Macropod MANOVAs}
@@ -430,27 +665,9 @@ MediumMacrpd$Age = str_replace_all(MediumMacrpd$Age,"Subadult","Immature")
 Ontogeny <- filter(MediumMacrpd, Age != "NA")
 Ontogeny.MediumGenus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Ontogeny)
 
-  #Petrogale species
-Petrogale <- filter(MediumMacrpd, Genus == "Petrogale")
-Petrogale <- filter(Petrogale, Size != "Small")
-
-Petrogale$Age = str_replace_all(Petrogale$Age,"Juvenile","Immature")
-Petrogale$Age = str_replace_all(Petrogale$Age,"Subadult","Immature")
-Petrogale <- filter(Petrogale, Age != "NA")
-Ontogeny.Petrogale <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Petrogale)
-
-  #Black-flanked rock-wallaby
-Plateralis <- filter(MediumMacrpd, Group == "Black-flanked rock-wallaby")
-Allom.Plateralis <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ GeoMean, data = Plateralis)
-
-Plateralis <- filter(Petrogale, Group == "Black-flanked rock-wallaby")
-Ontogeny.Plateralis <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Plateralis)
-
   #Onychogalea species
 Onychogalea <- filter(MediumMacrpd, Genus == "Onychogalea")
 
-Onychogalea$Age = str_replace_all(Onychogalea$Age,"Juvenile","Immature")
-Onychogalea$Age = str_replace_all(Onychogalea$Age,"Subadult","Immature")
 Onychogalea <- filter(Onychogalea, Age != "NA")
 Ontogeny.Onychogalea <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Onychogalea)
 
@@ -462,30 +679,47 @@ Allom.Ofraenata <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ GeoMean, data = 
 Ounguifera <- filter(MediumMacrpd, Group == "Northern nail-tail wallaby")
 Allom.Ounguifera <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ GeoMean, data = Ounguifera)
 
-Ounguifera$Age = str_replace_all(Ounguifera$Age,"Juvenile","Immature")
-Ounguifera$Age = str_replace_all(Ounguifera$Age,"Subadult","Immature")
 Ounguifera <- filter(Ounguifera, Age != "NA")
 Ontogeny.Ounguifera <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Ounguifera)
+
+Ounguifera <- filter(MediumMacrpd, Group == "Northern nail-tail wallaby")
+Ounguifera <- filter(Ounguifera, Sex != "NA")
+Sex.Ounguifera <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Sex, data = Ounguifera)
+
+  #Petrogale species
+Petrogale <- filter(MediumMacrpd, Genus == "Petrogale")
+
+Petrogale <- filter(Petrogale, Age != "NA")
+Ontogeny.Petrogale <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Petrogale)
+
+  #Black-flanked rock-wallaby
+Plateralis <- filter(MediumMacrpd, Group == "Black-flanked rock-wallaby")
+Allom.Plateralis <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ GeoMean, data = Plateralis)
+
+Plateralis <- filter(Plateralis, Age != "NA")
+Ontogeny.Plateralis <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Plateralis)
 
   #Spectacled hare-wallaby
 Lconspicillatus <- filter(MediumMacrpd, Group == "Spectacled hare-wallaby")
 Allom.Lconspicillatus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ GeoMean, data = Lconspicillatus)
 
+Lconspicillatus <- filter(Lconspicillatus, Age != "NA")
+Ontogeny.Lconspicillatus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Lconspicillatus)
+
 #Summary of MANOVAs
 MediumMacropod.Manovas <- data.frame('Taxa'= character(0),'MANOVA' = character(0), 'df1' = integer(0),'df2' = integer(0), "F Stat" = integer(0), "p"= integer(0))
 MediumMacropod.Manovas[1,] <- rbind(MediumMacropod.Manovas, c("All Medium Macropods","Shape ~ Age", round(summary(Ontogeny.MediumGenus)$stats[1,c(4,5,3,6)],3)))
-
 MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Onychogalea species","Shape ~ Age", round(summary(Ontogeny.Onychogalea)$stats[1,c(4,5,3,6)],3)))
 MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Bridled nail-tail wallaby","Shape ~ Size", round(summary(Allom.Ofraenata)$stats[1,c(4,5,3,6)],3)))
-
 MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Northern nail-tail wallaby","Shape ~ Size", round(summary(Allom.Ounguifera)$stats[1,c(4,5,3,6)],3)))
 MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Northern nail-tail wallaby","Shape ~ Age", round(summary(Ontogeny.Ounguifera)$stats[1,c(4,5,3,6)],3)))
-
+MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Northern nail-tail wallaby","Shape ~ Sex", round(summary(Sex.Ounguifera)$stats[1,c(4,5,3,6)],3)))
 MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Petrogale species","Shape ~ Age", round(summary(Ontogeny.Petrogale)$stats[1,c(4,5,3,6)],3)))
 MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Black-flanked rock-wallaby","Shape ~ Size", round(summary(Allom.Plateralis)$stats[1,c(4,5,3,6)],3)))
 MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Black-flanked rock-wallaby","Shape ~ Age", round(summary(Ontogeny.Plateralis)$stats[1,c(4,5,3,6)],3)))
-
 MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Spectacled hare-wallaby","Shape ~ Size", round(summary(Allom.Lconspicillatus)$stats[1,c(4,5,3,6)],3)))
+MediumMacropod.Manovas <- rbind(MediumMacropod.Manovas, c("Spectacled hare-wallaby","Shape ~ Age", round(summary(Ontogeny.Lconspicillatus)$stats[1,c(4,5,3,6)],3)))
+
 num <- as.numeric(MediumMacropod.Manovas[,3])
 den <- as.numeric(MediumMacropod.Manovas[,4])
 QF <- qf(0.01, num, den)
@@ -495,8 +729,7 @@ colnames(MediumMacropod.Manovas)[5] <- 'F>Fcritical at 0.01'
 
 MediumMacropod.Manovas
 
-remove(Allom.Lconspicillatus, Allom.Ofraenata, Allom.Ounguifera, Allom.Plateralis, Lconspicillatus, MediumMacrpd, Ofraenata, Ontogeny, Ontogeny.MediumGenus, Ontogeny.Onychogalea, Ontogeny.Ounguifera, Ontogeny.Petrogale, Ontogeny.Plateralis, Onychogalea, Ounguifera, Petrogale, Plateralis, den, Fcritical, num, QF)
-
+remove(Allom.Lconspicillatus, Allom.Ofraenata, Allom.Ounguifera, Allom.Plateralis, Lconspicillatus, MediumMacrpd, Ofraenata, Ontogeny, Ontogeny.Lconspicillatus, Ontogeny.MediumGenus, Ontogeny.Onychogalea, Ontogeny.Ounguifera, Ontogeny.Petrogale, Ontogeny.Plateralis, Onychogalea, Ounguifera, Petrogale, Plateralis, Sex.Ounguifera, den, Fcritical, num, QF)
 ```
 
 ```{r Small macropod MANOVAs}
@@ -511,13 +744,14 @@ Ontogeny <- filter(SmallMacrpd, Age != "NA")
 Ontogeny.SmallGenus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Ontogeny)
 
   #Banded hare-wallaby
-Lfasciatus <- filter(SmallMacrpd, Group == "Banded hare-wallaby")
+Lfasciatus <- filter(SmallMacrpd, Genus == "Lagostrophus")
 Allom.Lfasciatus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ GeoMean, data = Lfasciatus)
 
-  #Bettongia species
+Lfasciatus <- filter(Lfasciatus, Age != "NA")
+Ontogeny.Lfasciatus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Lfasciatus)
+
+   #Bettongia species
 Bettongia <- filter(SmallMacrpd, Genus == "Bettongia")
-Bettongia$Age = str_replace_all(Bettongia$Age,"Juvenile","Immature")
-Bettongia$Age = str_replace_all(Bettongia$Age,"Subadult","Immature")
 Bettongia <- filter(Bettongia, Age != "NA")
 Ontogeny.Bettongia <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Bettongia)
 
@@ -526,8 +760,6 @@ Bpenicillata <- filter(SmallMacrpd, Group == "Brush-tailed bettong")
 
 Allom.Bpenicillata <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ GeoMean, data = Bpenicillata)
 
-Bpenicillata$Age = str_replace_all(Bpenicillata$Age,"Juvenile","Immature")
-Bpenicillata$Age = str_replace_all(Bpenicillata$Age,"Subadult","Immature")
 Bpenicillata <- filter(Bpenicillata, Age != "NA")
 Ontogeny.Bpenicillata <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Bpenicillata)
 
@@ -535,31 +767,40 @@ Bpenicillata <- filter(SmallMacrpd, Group == "Brush-tailed bettong")
 Bpenicillata <- filter(Bpenicillata, Sex != "NA")
 Sex.Bpenicillata <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Sex, data = Bpenicillata)
 
+  #Burrowing bettong
+Blesueur <- filter(SmallMacrpd, Group == "Burrowing bettong")
+Allom.Blesueur <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ GeoMean, data = Blesueur)
+
   #Rufous hare-wallaby
 Lhirsutus <- filter(SmallMacrpd, Group == "Rufous hare-wallaby")
-Lhirsutus$Island = str_replace_all(Lhirsutus$Species,"hirsutus","Mainland")
-Lhirsutus$Island = str_replace_all(Lhirsutus$Species,"hirsutus bernieri","Island")
-Lhirsutus$Island = str_replace_all(Lhirsutus$Species,"hirsutus dorreae","Island")
+Lhirsutus$Island = Lhirsutus$Species
+Lhirsutus$Island = str_replace_all(Lhirsutus$Island,"hirsutus bernieri","Island")
+Lhirsutus$Island = str_replace_all(Lhirsutus$Island,"hirsutus dorreae","Island")
+Lhirsutus$Island = str_replace_all(Lhirsutus$Island,"hirsutus","Mainland")
 Shape.LhirsutsSubsp <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Island, data = Lhirsutus)
 
 Allom.Lhirsutus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ GeoMean, data = Lhirsutus)
 
-Lhirsutus$Age = str_replace_all(Lhirsutus$Age, "Juvenile", "Immature")
-Lhirsutus$Age = str_replace_all(Lhirsutus$Age, "Subadult", "Immature")
-Lhirsutus <- filter(Lhirsutus, Age != "NA")
 Ontogeny.Lhirsutus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Age, data = Lhirsutus)
+
+Lhirsutus <- filter(Lhirsutus, Sex != "NA")
+Sex.Lhirsutus <- manova(cbind(PC1, PC2, PC3, PC4, PC5, PC6) ~ Sex, data = Lhirsutus)
 
 #Summary of Small Macropod MANOVAs
 SmallMacropod.Manovas <- data.frame('Taxa'= character(0),'MANOVA' = character(0), 'df1' = integer(0),'df2' = integer(0), "F Stat" = integer(0), "p"= integer(0))
 SmallMacropod.Manovas[1,] <- rbind(SmallMacropod.Manovas, c("All Small Macropods","Shape ~ Age", round(summary(Ontogeny.SmallGenus)$stats[1,c(4,5,3,6)],3)))
 SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Banded hare-wallaby","Shape ~ Size", round(summary(Allom.Lfasciatus)$stats[1,c(4,5,3,6)],3)))
+SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Banded hare-wallaby","Shape ~ Age", round(summary(Ontogeny.Lfasciatus)$stats[1,c(4,5,3,6)],3)))
 SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Bettongia species","Shape ~ Age", round(summary(Ontogeny.Bettongia)$stats[1,c(4,5,3,6)],3)))
 SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Brush-tailed bettong","Shape ~ Size", round(summary(Allom.Bpenicillata)$stats[1,c(4,5,3,6)],3)))
 SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Brush-tailed bettong","Shape ~ Age", round(summary(Ontogeny.Bpenicillata)$stats[1,c(4,5,3,6)],3)))
 SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Brush-tailed bettong","Shape ~ Sex", round(summary(Sex.Bpenicillata)$stats[1,c(4,5,3,6)],3)))
+SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Burrowing bettong","Shape ~ Size", round(summary(Allom.Blesueur)$stats[1,c(4,5,3,6)],3)))
 SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Rufous hare-wallaby","Shape ~ Sub-Species", round(summary(Shape.LhirsutsSubsp)$stats[1,c(4,5,3,6)],3)))
 SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Rufous hare-wallaby","Shape ~ Size", round(summary(Allom.Lhirsutus)$stats[1,c(4,5,3,6)],3)))
 SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Rufous hare-wallaby","Shape ~ Age", round(summary(Ontogeny.Lhirsutus)$stats[1,c(4,5,3,6)],3)))
+SmallMacropod.Manovas <- rbind(SmallMacropod.Manovas, c("Rufous hare-wallaby","Shape ~ Sex", round(summary(Sex.Lhirsutus)$stats[1,c(4,5,3,6)],3)))
+
 num <- as.numeric(SmallMacropod.Manovas[,3])
 den <- as.numeric(SmallMacropod.Manovas[,4])
 QF <- qf(0.01, num, den)
@@ -569,7 +810,7 @@ colnames(SmallMacropod.Manovas)[5] <- 'F>Fcritical at 0.01'
 
 SmallMacropod.Manovas
 
-remove(Allom.Bpenicillata, Allom.Lfasciatus, Allom.Lhirsutus, Bettongia, Bpenicillata, Lfasciatus, Lhirsutus, Ontogeny, Ontogeny.Bettongia, Ontogeny.Bpenicillata, Ontogeny.Lhirsutus, Ontogeny.SmallGenus, Sex.Bpenicillata, Shape.LhirsutsSubsp, SmallMacrpd, den, Fcritical, num, QF)
+remove(Allom.Bpenicillata, Allom.Lhirsutus, Bettongia, Bpenicillata, Lhirsutus, Ontogeny, Ontogeny.Bettongia, Ontogeny.Bpenicillata, Ontogeny.Lhirsutus, Ontogeny.SmallGenus, Sex.Bpenicillata, Shape.LhirsutsSubsp, SmallMacrpd, den, Fcritical, num, QF)
 ```
 
 ##Large Macropod - Linear Discriminant Analysis
@@ -790,8 +1031,8 @@ write.csv(Medium.arch.predict, "Supp_Tables/Table.2C.csv")
 write.csv(Small.arch.predict, "Supp_Tables/Table.2D.csv")
 ```
 
-```{r Table S6-S8 Multivariate analysis of variance on macropod calcaneus shape}
-write.csv(LargeMacropod.Manovas, "Supp_Tables/Table.S6B.csv")
-write.csv(MediumMacropod.Manovas, "Supp_Tables/Table.S7B.csv")
-write.csv(SmallMacropod.Manovas, "Supp_Tables/Table.S8B.csv")
+```{r Table S7-S9 Multivariate analysis of variance on macropod calcaneus shape}
+write.csv(LargeMacropod.Manovas, "Supp_Tables/Table.S7B.csv")
+write.csv(MediumMacropod.Manovas, "Supp_Tables/Table.S8B.csv")
+write.csv(SmallMacropod.Manovas, "Supp_Tables/Table.S9B.csv")
 ```

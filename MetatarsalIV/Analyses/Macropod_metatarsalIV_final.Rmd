@@ -7,7 +7,7 @@ editor_options:
   chunk_output_type: console
 ---
 #Description of analyses
-#This analysis includes multivariate ordinal and statistical analyses of macropod fourth metatarsals and models the classification of archaeological specimens from Boodie Cave, Western Australia.
+#This analysis includes multivariate ordinal and statistical analyses of macropod fourth metatarsals and models the classification of archaeological specimens from Boodie Cave, Barrow Island, Western Australia.
 
 ```{r set library and wd}
 library(MASS)
@@ -18,8 +18,87 @@ library(Hmisc)
 library(vegan)
 library(rstatix)
 library(MVN)
+library(psych)
 
-setwd("~/Dropbox/Documents/PhD/Metric_Morphometrics/Metric_morph_R/Morphometric_classification_kangaroo_bones/MetatarsalIV")
+setwd("~/ ## SET WD ##  /Morphometric_classification_kangaroo_bones/MetatarsalIV")
+```
+
+```{r Test Intraoperator Reliability}
+metatarsal <- read.csv("Data/Raw.test.retest.csv")
+
+GL1 <- ICC(metatarsal[1:61,6:8])
+GL2 <- ICC(metatarsal[62:105,6:8])
+GL3 <- ICC(metatarsal[106:142,6:8])
+GL <- data.frame(c('GL', GL1$results[3,2:6], GL2$results[3,2:6], GL3$results[3,2:6]))
+colnames(GL)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(GL1, GL2, GL3)
+
+Bp1 <- ICC(metatarsal[1:61,9:11])
+Bp2 <- ICC(metatarsal[62:105,9:11])
+Bp3 <- ICC(metatarsal[106:142,9:11])
+Bp <- data.frame(c('Bp', Bp1$results[3,2:6], Bp2$results[3,2:6], Bp3$results[3,2:6]))
+colnames(Bp)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(Bp1, Bp2, Bp3)
+
+Dp1 <- ICC(metatarsal[1:61,12:14])
+Dp2 <- ICC(metatarsal[62:105,12:14])
+Dp3 <- ICC(metatarsal[106:142,12:14])
+Dp <- data.frame(c('Dp', Dp1$results[3,2:6], Dp2$results[3,2:6], Dp3$results[3,2:6]))
+colnames(Dp)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(Dp1, Dp2, Dp3)
+
+B_ms1 <- ICC(metatarsal[1:61,15:17])
+B_ms2 <- ICC(metatarsal[62:105,15:17])
+B_ms3 <- ICC(metatarsal[106:142,15:17])
+B_ms <- data.frame(c('B_ms', B_ms1$results[3,2:6], B_ms2$results[3,2:6], B_ms3$results[3,2:6]))
+colnames(B_ms)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(B_ms1, B_ms2, B_ms3)
+
+H_ms1 <- ICC(metatarsal[1:61,18:20])
+H_ms2 <- ICC(metatarsal[62:105,18:20])
+H_ms3 <- ICC(metatarsal[106:142,18:20])
+H_ms <- data.frame(c('H_ms', H_ms1$results[3,2:6], H_ms2$results[3,2:6], H_ms3$results[3,2:6]))
+colnames(H_ms)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(H_ms1, H_ms2, H_ms3)
+
+Bd1 <- ICC(metatarsal[1:61,21:23])
+Bd2 <- ICC(metatarsal[62:105,21:23])
+Bd3 <- ICC(metatarsal[106:142,21:23])
+Bd <- data.frame(c('Bd', Bd1$results[3,2:6], Bd2$results[3,2:6], Bd3$results[3,2:6]))
+colnames(Bd)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(Bd1, Bd2, Bd3)
+
+Dd1 <- ICC(metatarsal[1:61,24:26])
+Dd2 <- ICC(metatarsal[62:105,24:26])
+Dd3 <- ICC(metatarsal[106:142,24:26])
+Dd <- data.frame(c('Dd', Dd1$results[3,2:6], Dd2$results[3,2:6], Dd3$results[3,2:6]))
+colnames(Dd)[1:16] <- c("Variable","r.large", "F.large", "df1.large", "df2.large", "p.large", "r.medium", "F.medium", "df1.medium", "df2.medium", "p.medium", "r.small", "F.small", "df1.small", "df2.small", "p.small")
+remove(Dd1, Dd2, Dd3)
+
+MetatarsalRep <- rbind(GL, Bp, Dp, B_ms, H_ms, Bd, Dd)
+remove(GL, Bp, Dp, B_ms, H_ms, Bd, Dd)
+
+metatarsal <- metatarsal[complete.cases(metatarsal[,6:26]),]
+GL <- (apply(metatarsal[,6:8], 1, sd))/(rowMeans(metatarsal[,6:8]))
+Bp <- (apply(metatarsal[,9:11], 1, sd))/(rowMeans(metatarsal[,9:11]))
+Dp <- (apply(metatarsal[,12:14], 1, sd))/(rowMeans(metatarsal[,12:14]))
+B_ms <- (apply(metatarsal[,15:17], 1, sd))/(rowMeans(metatarsal[,15:17]))
+H_ms <- (apply(metatarsal[,18:20], 1, sd))/(rowMeans(metatarsal[,18:20]))
+Bd <- (apply(metatarsal[,21:23], 1, sd))/(rowMeans(metatarsal[,21:23]))
+Dd <- (apply(metatarsal[,24:26], 1, sd))/(rowMeans(metatarsal[,24:26]))
+metatarsalPC <- data.frame('Variable' = character(0),'Large'=integer(0), "Medium" = integer(0), 'Small' = integer())
+metatarsalPC[1,] <- rbind(metatarsalPC, c("GL", round(mean(GL[1:55]),3), round(mean(GL[56:97]),3), round(mean(GL[98:131]),3)))
+metatarsalPC <- rbind(metatarsalPC, c("Bp", round(mean(Bp[1:55]),3), round(mean(Bp[56:97]),3), round(mean(Bp[98:131]),3)))
+metatarsalPC <- rbind(metatarsalPC, c("Dp", round(mean(Dp[1:55]),3), round(mean(Dp[56:97]),3), round(mean(Dp[98:131]),3)))
+metatarsalPC <- rbind(metatarsalPC, c("B_ms", round(mean(B_ms[1:55]),3), round(mean(B_ms[56:97]),3), round(mean(B_ms[98:131]),3)))
+metatarsalPC <- rbind(metatarsalPC, c("H_ms", round(mean(H_ms[1:55]),3), round(mean(H_ms[56:97]),3), round(mean(H_ms[98:131]),3)))
+metatarsalPC <- rbind(metatarsalPC, c("Bd", round(mean(Bd[1:55]),3), round(mean(Bd[56:97]),3), round(mean(Bd[98:131]),3)))
+metatarsalPC <- rbind(metatarsalPC, c("Dd", round(mean(Dd[1:55]),3), round(mean(Dd[56:97]),3), round(mean(Dd[98:131]),3)))
+remove(GL, Bp, Dp, B_ms, H_ms, Bd, Dd)
+metatarsalPC
+
+write.csv(metatarsalPC, "Supp_Tables/Table.S6.3A.csv")
+write.csv(MetatarsalRep, "Supp_Tables/Table.S6.3B.csv")
 ```
 
 ```{r Import Training data}
@@ -313,31 +392,29 @@ Nagilis <- filter(LargeMacrpd, Group == "Agile wallaby")
 
 Allom.Nagilis <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Nagilis)
 
-Nagilis$Age = str_replace_all(Nagilis$Age,"Juvenile","Immature")
-Nagilis$Age = str_replace_all(Nagilis$Age,"Subadult","Immature")
-Nagilis <- filter(Nagilis, Age != "NA")
 Ontogeny.Nagilis <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Nagilis)
+
+Sex.Nagilis <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Sex, data = Nagilis)
 
   #Osphranter species 
 Osphranter <- filter(LargeMacrpd, Genus == "Osphranter")
 
-Osphranter$Age = str_replace_all(Osphranter$Age,"Juvenile","Immature")
-Osphranter$Age = str_replace_all(Osphranter$Age,"Subadult","Immature")
 Osphranter <- filter(Osphranter, Age != "NA")
 Ontogeny.Osphranter <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Osphranter)
 
   #Common wallaroo
 Orobustus <- filter(LargeMacrpd, Group == "Common wallaroo")
-Orobustus$Island = str_replace_all(Orobustus$Species,"robustus robustus","Mainland")
-Orobustus$Island = str_replace_all(Orobustus$Species,"robustus","Mainland")
-Orobustus$Island = str_replace_all(Orobustus$Species,"robustus erubescens","Mainland")
-Orobustus$Island = str_replace_all(Orobustus$Species,"robustus woodwardi","Mainland")
-Orobustus$Island = str_replace_all(Orobustus$Species,"robustus isabellinus","Island")
+Orobustus$Island <- Orobustus$Species
+Orobustus$Island = str_replace_all(Orobustus$Island,"robustus robustus","Mainland")
+Orobustus$Island = str_replace_all(Orobustus$Island,"robustus erubescens","Mainland")
+Orobustus$Island = str_replace_all(Orobustus$Island,"robustus woodwardi","Mainland")
+Orobustus$Island = str_replace_all(Orobustus$Island,"robustus isabellinus","Island")
+Orobustus$Island = str_replace_all(Orobustus$Island,"robustus","Mainland")
 Shape.OrobSubsp <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Island, data = Orobustus)
 
 Allom.Orobustus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Orobustus)
 
-Orobustus <- filter(Osphranter, Group == "Common wallaroo")
+Orobustus <- filter(Orobustus, Age != "NA")
 Ontogeny.Orobustus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Orobustus)
 
   #Red kangaroo
@@ -345,10 +422,12 @@ Orufus <- filter(LargeMacrpd, Group == "Red kangaroo")
 
 Allom.Orufus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Orufus)
 
-Orufus$Age = str_replace_all(Orufus$Age,"Juvenile","Immature")
-Orufus$Age = str_replace_all(Orufus$Age,"Subadult","Immature")
 Orufus <- filter(Orufus, Age != "NA")
 Ontogeny.Orufus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Orufus)
+
+Orufus <- filter(LargeMacrpd, Group == "Red kangaroo")
+Orufus <- filter(Orufus, Sex != "NA")
+Sex.Orufus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Sex, data = Orufus)
 
   #Western grey kangaroo
 Mfuliginosus <- filter(LargeMacrpd, Group == "W. grey kangaroo")
@@ -367,12 +446,14 @@ Large.Macropod.Manovas <- data.frame('Taxa'= character(0),'MANOVA' = character(0
 Large.Macropod.Manovas[1,] <- rbind(Large.Macropod.Manovas, c("All Large Macropods","Shape ~ Age", round(summary(Ontogeny.LargeGenus)$stats[1,c(4,5,3,6)],3)))
 Large.Macropod.Manovas <- rbind(Large.Macropod.Manovas, c("Agile wallaby","Shape ~ Size", round(summary(Allom.Nagilis)$stats[1,c(4,5,3,6)],3)))
 Large.Macropod.Manovas <- rbind(Large.Macropod.Manovas, c("Agile wallaby","Shape ~ Age", round(summary(Ontogeny.Nagilis)$stats[1,c(4,5,3,6)],3)))
+Large.Macropod.Manovas <- rbind(Large.Macropod.Manovas, c("Agile wallaby","Shape ~ Sex", round(summary(Sex.Nagilis)$stats[1,c(4,5,3,6)],3)))
 Large.Macropod.Manovas <- rbind(Large.Macropod.Manovas, c("Osphranter species","Shape ~ Age", round(summary(Ontogeny.Osphranter)$stats[1,c(4,5,3,6)],3)))
 Large.Macropod.Manovas <- rbind(Large.Macropod.Manovas, c("Common wallaroo","Shape ~ Subspecies", round(summary(Shape.OrobSubsp)$stats[1,c(4,5,3,6)],3)))
 Large.Macropod.Manovas <- rbind(Large.Macropod.Manovas, c("Common wallaroo","Shape ~ Size", round(summary(Allom.Orobustus)$stats[1,c(4,5,3,6)],3)))
 Large.Macropod.Manovas <- rbind(Large.Macropod.Manovas, c("Common wallaroo","Shape ~ Age", round(summary(Ontogeny.Orobustus)$stats[1,c(4,5,3,6)],3)))
 Large.Macropod.Manovas <- rbind(Large.Macropod.Manovas, c("Red kangaroo","Shape ~ Size", round(summary(Allom.Orufus)$stats[1,c(4,5,3,6)],3)))
 Large.Macropod.Manovas <- rbind(Large.Macropod.Manovas, c("Red kangaroo","Shape ~ Age", round(summary(Ontogeny.Orufus)$stats[1,c(4,5,3,6)],3)))
+Large.Macropod.Manovas <- rbind(Large.Macropod.Manovas, c("Red kangaroo","Shape ~ Sex", round(summary(Sex.Orufus)$stats[1,c(4,5,3,6)],3)))
 Large.Macropod.Manovas <- rbind(Large.Macropod.Manovas, c("Western grey kangaroo","Shape ~ Size", round(summary(Allom.Mfuliginosus)$stats[1,c(4,5,3,6)],3)))
 Large.Macropod.Manovas <- rbind(Large.Macropod.Manovas, c("Western grey kangaroo","Shape ~ Age", round(summary(Ontogeny.Mfuliginosus)$stats[1,c(4,5,3,6)],3)))
 Large.Macropod.Manovas <- rbind(Large.Macropod.Manovas, c("Western grey kangaroo","Shape ~ Sex", round(summary(Sex.Mfuliginosus)$stats[1,c(4,5,3,6)],3)))
@@ -385,7 +466,7 @@ Large.Macropod.Manovas <- cbind(Large.Macropod.Manovas[,1:4], Fcritical, Large.M
 colnames(Large.Macropod.Manovas)[5] <- 'F>Fcritical at 0.01'
 Large.Macropod.Manovas
 
-remove(Allom.Mfuliginosus, Allom.Nagilis, Allom.Orobustus, Allom.Orufus, LargeMacrpd, Mfuliginosus, Nagilis, Ontogeny, Ontogeny.LargeGenus, Ontogeny.Mfuliginosus, Ontogeny.Nagilis, Ontogeny.Orobustus, Ontogeny.Orufus, Ontogeny.Osphranter, Orobustus, Orufus, Osphranter, Sex.Mfuliginosus, Shape.OrobSubsp, den, Fcritical, num, QF)
+remove(Allom.Mfuliginosus, Allom.Nagilis, Allom.Orobustus, Allom.Orufus, LargeMacrpd, Mfuliginosus, Nagilis, Ontogeny, Ontogeny.LargeGenus, Ontogeny.Mfuliginosus, Ontogeny.Nagilis, Ontogeny.Orobustus, Ontogeny.Osphranter, Ontogeny.Orufus, Orobustus, Orufus, Osphranter, Sex.Mfuliginosus, Sex.Nagilis, Sex.Orufus, Shape.OrobSubsp, den, Fcritical, num, QF)
 ```
 
 ```{r Medium Macropod MANOVAs}
@@ -402,8 +483,6 @@ Ontogeny.MediumGenus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Onto
   #Onychogalea species
 Onychogalea <- filter(MediumMacrpd, Genus == "Onychogalea")
 
-Onychogalea$Age = str_replace_all(Onychogalea$Age,"Juvenile","Immature")
-Onychogalea$Age = str_replace_all(Onychogalea$Age,"Subadult","Immature")
 Onychogalea <- filter(Onychogalea, Age != "NA")
 Ontogeny.Onychogalea <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Onychogalea)
 
@@ -415,12 +494,9 @@ Allom.Ofraenata <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Ofrae
 Ounguifera <- filter(MediumMacrpd, Group == "Northern nail-tail wallaby")
 Allom.Ounguifera <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Ounguifera)
 
-  #Petrogale spp.
+  #Petrogale species
 Petrogale <- filter(MediumMacrpd, Genus == "Petrogale")
-Petrogale <- filter(Petrogale, Size != "Small")
 
-Petrogale$Age = str_replace_all(Petrogale$Age,"Juvenile","Immature")
-Petrogale$Age = str_replace_all(Petrogale$Age,"Subadult","Immature")
 Petrogale <- filter(Petrogale, Age != "NA")
 Ontogeny.Petrogale <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Petrogale)
 
@@ -429,7 +505,7 @@ Plateralis <- filter(MediumMacrpd, Group == "Black-flanked rock-wallaby")
 
 Allom.Plateralis <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Plateralis)
 
-Plateralis <- filter(Petrogale, Group == "Black-flanked rock-wallaby")
+Plateralis <- filter(Plateralis, Age != "NA")
 Ontogeny.Plateralis <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Plateralis)
 
   #Spectacled hare-wallaby
@@ -472,21 +548,19 @@ Ontogeny.SmallGenus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Ontog
 Bpenicillata <- filter(SmallMacrpd, Group == "Brush-tailed bettong")
 Allom.Bpenicillata <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Bpenicillata)
 
-Bpenicillata <- filter(SmallMacrpd, Group == "Brush-tailed bettong")
 Bpenicillata <- filter(Bpenicillata, Sex != "NA")
 Sex.Bpenicillata <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Sex, data = Bpenicillata)
 
   #Rufous hare-wallaby
 Lhirsutus <- filter(SmallMacrpd, Group == "Rufous hare-wallaby")
-Lhirsutus$Island = str_replace_all(Lhirsutus$Species,"hirsutus","Mainland")
-Lhirsutus$Island = str_replace_all(Lhirsutus$Species,"hirsutus bernieri","Island")
-Lhirsutus$Island = str_replace_all(Lhirsutus$Species,"hirsutus dorreae","Island")
+Lhirsutus$Island <- Lhirsutus$Species
+Lhirsutus$Island = str_replace_all(Lhirsutus$Island,"hirsutus bernieri","Island")
+Lhirsutus$Island = str_replace_all(Lhirsutus$Island,"hirsutus dorreae","Island")
+Lhirsutus$Island = str_replace_all(Lhirsutus$Island,"hirsutus","Mainland")
 Shape.LhirsutsSubsp <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Island, data = Lhirsutus)
 
 Allom.Lhirsutus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ GeoMean, data = Lhirsutus)
 
-Lhirsutus$Age = str_replace_all(Lhirsutus$Age, "Juvenile", "Immature")
-Lhirsutus$Age = str_replace_all(Lhirsutus$Age, "Subadult", "Immature")
 Lhirsutus <- filter(Lhirsutus, Age != "NA")
 Ontogeny.Lhirsutus <- manova(cbind(PC1, PC2, PC3, PC4, PC5) ~ Age, data = Lhirsutus)
 
@@ -727,8 +801,8 @@ write.csv(Medium.arch.predict, "Supp_Tables/Table.2E.csv")
 write.csv(Small.arch.predict, "Supp_Tables/Table.2F.csv")
 ```
 
-```{r Table S6-S8 Multivariate analysis of variance on macropod fourth metatarsal shape}
-write.csv(Large.Macropod.Manovas, "Supp_Tables/Table.S6C.csv")
-write.csv(Medium.Macropod.Manovas, "Supp_Tables/Table.S7C.csv")
-write.csv(Small.Macropod.Manovas, "Supp_Tables/Table.S8C.csv")
+```{r Table S7-S9 Multivariate analysis of variance on macropod fourth metatarsal shape}
+write.csv(Large.Macropod.Manovas, "Supp_Tables/Table.S7C.csv")
+write.csv(Medium.Macropod.Manovas, "Supp_Tables/Table.S8C.csv")
+write.csv(Small.Macropod.Manovas, "Supp_Tables/Table.S9C.csv")
 ```

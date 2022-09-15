@@ -1,0 +1,8 @@
+"","Taxa","MANOVA","df1","df2","F>Fcritical at 0.01","F.Stat","p"
+"1","All Small Macropods","Shape ~ Age","5","32",TRUE,"3.896","0.007"
+"2","Brush-tailed bettong","Shape ~ Size","5","4",TRUE,"0.293","0.894"
+"3","Brush-tailed bettong","Shape ~ Sex","5","2",TRUE,"1.556","0.435"
+"4","Rufous hare-wallaby","Shape ~ Sub-Species","5","8",TRUE,"2.852","0.091"
+"5","Rufous hare-wallaby","Shape ~ Size","5","8",TRUE,"1.573","0.271"
+"6","Rufous hare-wallaby","Shape ~ Age","5","8",TRUE,"0.663","0.662"
+"7","Rufous hare-wallaby","Shape ~ Sex","5","5",TRUE,"2.212","0.202"
